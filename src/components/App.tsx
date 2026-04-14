@@ -199,6 +199,10 @@ const Dashboard: React.FC = () => {
           <ConcentrationChart />
         </div>
       </div>
+
+      <footer style={{ marginTop: '60px', paddingTop: '40px', borderTop: '1px solid #e0e0e0', textAlign: 'center', color: '#999999', fontSize: '12px' }}>
+        <p>Created by Nanda Pratama © 2026</p>
+      </footer>
     </div>
   );
 };
