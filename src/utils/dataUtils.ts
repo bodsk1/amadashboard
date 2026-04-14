@@ -103,6 +103,22 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
   
   const momGrowth = prevNett ? ((totalNett - prevNett) / prevNett) * 100 : 0;
   
+  // Active users metrics
+  const uniqueCustomers = new Set(orders.map(o => o.customerId)).size;
+  
+  // Weekly active users (last 7 days from latest order)
+  const latestDate = orders.length > 0 ? new Date(Math.max(...orders.map(o => o.createOrderTime.getTime()))) : new Date();
+  const sevenDaysAgo = new Date(latestDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const weeklyCustomers = new Set(
+    orders.filter(o => o.createOrderTime >= sevenDaysAgo).map(o => o.customerId)
+  ).size;
+  
+  // Daily active users (last day from latest order)
+  const oneDayAgo = new Date(latestDate.getTime() - 24 * 60 * 60 * 1000);
+  const dailyCustomers = new Set(
+    orders.filter(o => o.createOrderTime >= oneDayAgo).map(o => o.customerId)
+  ).size;
+  
   return {
     totalTransactions,
     totalGross,
@@ -117,5 +133,8 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     averageDiscountPerTransaction,
     revenuePerTransactionByService,
     topCustomersByOrders: sortedCustomersByOrders,
+    monthlyActiveUsers: uniqueCustomers,
+    weeklyActiveUsers: weeklyCustomers,
+    dailyActiveUsers: dailyCustomers,
   };
 };

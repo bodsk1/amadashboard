@@ -132,20 +132,23 @@ const Dashboard: React.FC = () => {
 
   const buttonStyle = (isActive: boolean): React.CSSProperties => ({
     padding: '10px 20px',
-    borderRadius: '6px',
-    border: isActive ? 'none' : '1px solid #333333',
+    borderRadius: '20px',
+    border: isActive ? 'none' : '1px solid #e0e0e0',
     cursor: 'pointer',
-    background: isActive ? '#ffffff' : '#1a1a1a',
-    color: isActive ? '#000000' : '#ffffff',
-    fontFamily: 'inherit',
+    background: isActive ? '#000000' : '#ffffff',
+    color: isActive ? '#ffffff' : '#000000',
+    fontFamily: "'Alliance No. 2', sans-serif",
     fontSize: '14px',
     fontWeight: 500,
     transition: 'all 0.2s ease',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
   });
 
   return (
-    <div style={{ minHeight: '100vh', background: '#000000', padding: '40px 20px' }}>
-      <h1 style={{ color: '#ffffff', marginBottom: '32px', fontSize: '32px', fontWeight: 600, letterSpacing: '-0.5px', fontFamily: "'Alliance No. 2', sans-serif" }}>Anteraja App Monthly Dashboard</h1>
+    <div style={{ minHeight: '100vh', padding: '40px 20px', position: 'relative' }}>
+      <img src="/logo.png" alt="Anteraja" style={{ position: 'absolute', top: '20px', right: '20px', height: '40px', width: 'auto' }} />
+      <h1 style={{ color: '#000000', marginBottom: '32px', fontSize: '32px', fontWeight: 600, letterSpacing: '-0.5px', fontFamily: "'Alliance No. 2', sans-serif" }}>Anteraja App Monthly Dashboard</h1>
       
       <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
         <button onClick={() => dispatch(setActiveView('overall'))} style={buttonStyle(activeView === 'overall')}>
@@ -156,7 +159,7 @@ const Dashboard: React.FC = () => {
         </button>
         {activeView === 'monthly' && (
           <select value={selectedMonth || ''} onChange={e => dispatch(setSelectedMonth(e.target.value))}
-            style={{ padding: '10px 16px', borderRadius: '6px', background: '#1a1a1a', color: '#ffffff', border: '1px solid #333333', fontFamily: 'inherit', fontSize: '14px', cursor: 'pointer' }}>
+            style={{ padding: '10px 12px', paddingRight: '32px', borderRadius: '20px', background: '#ffffff', color: '#000000', border: '1px solid #e0e0e0', fontFamily: "'Alliance No. 2', sans-serif", fontSize: '14px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.5px', appearance: 'none', backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"8\" viewBox=\"0 0 12 8\"><path fill=\"%23000\" d=\"M1 1l5 5 5-5\"/></svg>')", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}>
             {months.map((m: string) => <option key={m} value={m}>{getMonthName(m)}</option>)}
           </select>
         )}

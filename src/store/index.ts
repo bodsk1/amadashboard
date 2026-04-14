@@ -16,6 +16,9 @@ const initialKPIMetrics: KPIMetrics = {
   averageDiscountPerTransaction: 0,
   revenuePerTransactionByService: { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 },
   topCustomersByOrders: [],
+  monthlyActiveUsers: 0,
+  weeklyActiveUsers: 0,
+  dailyActiveUsers: 0,
 };
 
 interface DataState {

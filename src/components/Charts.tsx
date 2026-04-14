@@ -5,12 +5,12 @@ import { RootState } from '../store';
 import { formatCurrency, formatNumber } from '../utils/formatters';
 
 const chartContainerStyle: React.CSSProperties = {
-  background: '#1a1a1a',
+  background: '#f5f5f5',
   borderRadius: '8px',
   padding: '24px',
-  color: '#ffffff',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-  border: '1px solid #333333',
+  color: '#000000',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+  border: '1px solid #e0e0e0',
   marginBottom: '16px',
 };
 
@@ -18,7 +18,7 @@ const titleStyle: React.CSSProperties = {
   fontSize: '13px',
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
-  color: '#999999',
+  color: '#666666',
   marginBottom: '16px',
   fontWeight: 600,
   fontFamily: "'Alliance No. 2', sans-serif",
@@ -26,15 +26,15 @@ const titleStyle: React.CSSProperties = {
 
 const tooltipStyle: React.CSSProperties = {
   position: 'absolute',
-  background: '#1a1a1a',
-  color: '#ffffff',
+  background: '#ffffff',
+  color: '#000000',
   padding: '10px 14px',
   borderRadius: '6px',
   fontSize: '12px',
   pointerEvents: 'none',
   zIndex: 1000,
-  boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
-  border: '1px solid #333333',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+  border: '1px solid #e0e0e0',
 };
 
 const TrendChart: React.FC = () => {
@@ -128,24 +128,24 @@ const TrendChart: React.FC = () => {
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x))
-      .attr('color', '#666666')
+      .attr('color', '#cccccc')
       .selectAll('text')
-      .attr('fill', '#999999')
+      .attr('fill', '#666666')
       .attr('font-size', '12px');
       
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(y).tickFormat(d => formatCurrency(d as number)))
-      .attr('color', '#666666')
+      .attr('color', '#cccccc')
       .selectAll('text')
-      .attr('fill', '#999999')
+      .attr('fill', '#666666')
       .attr('font-size', '12px');
     
     const legend = svg.append('g').attr('transform', `translate(${width - 70}, 20)`);
     Object.entries(colors).forEach(([key, color], i) => {
       legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', color);
       legend.append('text').attr('x', 18).attr('y', i * 20 + 10).text(key.charAt(0).toUpperCase() + key.slice(1))
-        .attr('fill', '#fff').attr('font-size', '11px');
+        .attr('fill', '#000').attr('font-size', '11px');
     });
   }, [months, kpis]);
 
@@ -206,7 +206,7 @@ const PaymentChart: React.FC = () => {
       .append('path')
       .attr('d', arc as any)
       .attr('fill', d => colors(d.data.label) as string)
-      .attr('stroke', '#1a1a2e')
+      .attr('stroke', '#ffffff')
       .attr('stroke-width', 2)
       .attr('cursor', 'pointer')
       .on('mouseenter', function(event, d) {
@@ -235,7 +235,7 @@ const PaymentChart: React.FC = () => {
       })
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
-      .attr('fill', '#fff')
+      .attr('fill', '#000')
       .attr('font-size', '10px')
       .attr('font-weight', 'bold')
       .attr('pointer-events', 'none')
@@ -269,7 +269,7 @@ const PaymentChart: React.FC = () => {
         d3.select(this).append('text')
           .attr('x', 18)
           .attr('y', 10)
-          .attr('fill', '#fff')
+          .attr('fill', '#000')
           .attr('font-size', '11px')
           .text(`${d.label}: ${formatNumber(d.value)}`);
       });
@@ -316,8 +316,8 @@ const ProfileChart: React.FC = () => {
     const total = d3.sum(data, d => d.value);
     
     const pie = d3.pie<{ label: string; value: number }>().value(d => d.value).sort(null);
-    const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(40).outerRadius(100);
-    const arcHover = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(40).outerRadius(115);
+    const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(50).outerRadius(100);
+    const arcHover = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(50).outerRadius(115);
     
     const g = svg.append('g').attr('transform', `translate(${width/2},${120})`);
     
@@ -327,7 +327,7 @@ const ProfileChart: React.FC = () => {
       .append('path')
       .attr('d', arc as any)
       .attr('fill', d => colors[d.data.label] || '#888')
-      .attr('stroke', '#1a1a2e')
+      .attr('stroke', '#ffffff')
       .attr('stroke-width', 2)
       .attr('cursor', 'pointer')
       .on('mouseenter', function(event, d) {
@@ -356,7 +356,7 @@ const ProfileChart: React.FC = () => {
       })
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
-      .attr('fill', '#fff')
+      .attr('fill', '#000')
       .attr('font-size', '12px')
       .attr('font-weight', 'bold')
       .attr('pointer-events', 'none')
@@ -390,7 +390,7 @@ const ProfileChart: React.FC = () => {
         d3.select(this).append('text')
           .attr('x', 18)
           .attr('y', 10)
-          .attr('fill', '#fff')
+          .attr('fill', '#000')
           .attr('font-size', '11px')
           .text(`${d.label}: ${formatNumber(d.value)}`);
       });
@@ -606,8 +606,8 @@ const ConcentrationChart: React.FC = () => {
   const headerCellStyle: React.CSSProperties = {
     padding: '12px',
     textAlign: 'left',
-    borderBottom: '2px solid #333333',
-    color: '#999999',
+    borderBottom: '2px solid #e0e0e0',
+    color: '#666666',
     fontWeight: 600,
     textTransform: 'uppercase',
     fontSize: '11px',
@@ -616,8 +616,8 @@ const ConcentrationChart: React.FC = () => {
 
   const cellStyle: React.CSSProperties = {
     padding: '12px',
-    borderBottom: '1px solid #333333',
-    color: '#ffffff',
+    borderBottom: '1px solid #e0e0e0',
+    color: '#000000',
   };
 
   const rankCellStyle: React.CSSProperties = {

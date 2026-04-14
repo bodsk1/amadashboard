@@ -48,4 +48,7 @@ export interface KPIMetrics {
   averageDiscountPerTransaction: number;
   revenuePerTransactionByService: Record<ServiceType, number>;
   topCustomersByOrders: Array<{ customerId: string; orderCount: number }>;
+  monthlyActiveUsers: number;
+  weeklyActiveUsers: number;
+  dailyActiveUsers: number;
 }
