@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, setOrders, setLoading, setError, computeKPIs, setActiveView, setSelectedMonth } from '../store';
 import { SummaryCards } from './SummaryCards';
-import { TrendChart, PaymentChart, ProfileChart, ServiceChart, ServiceProfitabilityChart, ConcentrationChart } from './Charts';
+import { TrendChart, PaymentChart, ProfileChart, ServiceChart, ServiceProfitabilityChart, ConcentrationChart, ItemCategoryChart } from './Charts';
 import { getMonthName } from '../utils/formatters';
 import Papa from 'papaparse';
 import { OrderRecord, ProfileType, ServiceType, PaymentChannel } from '../types';
@@ -197,6 +197,12 @@ const Dashboard: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginTop: '24px' }}>
         <div style={{ width: '100%' }}>
           <ConcentrationChart />
+        </div>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginTop: '24px' }}>
+        <div style={{ width: '100%' }}>
+          <ItemCategoryChart />
         </div>
       </div>
 

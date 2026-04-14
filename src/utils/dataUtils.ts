@@ -50,6 +50,7 @@ export const transformRow = (row: RawCSVRow): OrderRecord | null => {
     grossAmount,
     promoAmount,
     nettAmount: grossAmount - promoAmount,
+    itemCategory: row.item_category_code || 'Unknown',
   };
 };
 
@@ -119,6 +120,14 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     orders.filter(o => o.createOrderTime >= oneDayAgo).map(o => o.customerId)
   ).size;
   
+  // Item category metrics
+  const ordersByItemCategory: Record<string, number> = {};
+  const revenueByItemCategory: Record<string, number> = {};
+  orders.forEach(o => {
+    ordersByItemCategory[o.itemCategory] = (ordersByItemCategory[o.itemCategory] || 0) + 1;
+    revenueByItemCategory[o.itemCategory] = (revenueByItemCategory[o.itemCategory] || 0) + o.nettAmount;
+  });
+  
   return {
     totalTransactions,
     totalGross,
@@ -136,5 +145,7 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     monthlyActiveUsers: uniqueCustomers,
     weeklyActiveUsers: weeklyCustomers,
     dailyActiveUsers: dailyCustomers,
+    ordersByItemCategory,
+    revenueByItemCategory,
   };
 };

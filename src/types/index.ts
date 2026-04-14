@@ -26,6 +26,7 @@ export interface OrderRecord {
   grossAmount: number;
   promoAmount: number;
   nettAmount: number;
+  itemCategory: string;
 }
 
 export interface MonthlyData {
@@ -51,4 +52,6 @@ export interface KPIMetrics {
   monthlyActiveUsers: number;
   weeklyActiveUsers: number;
   dailyActiveUsers: number;
+  ordersByItemCategory: Record<string, number>;
+  revenueByItemCategory: Record<string, number>;
 }

@@ -19,6 +19,8 @@ const initialKPIMetrics: KPIMetrics = {
   monthlyActiveUsers: 0,
   weeklyActiveUsers: 0,
   dailyActiveUsers: 0,
+  ordersByItemCategory: {},
+  revenueByItemCategory: {},
 };
 
 interface DataState {

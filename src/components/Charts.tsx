@@ -569,7 +569,7 @@ const ServiceProfitabilityChart: React.FC = () => {
   );
 };
 
-export { TrendChart, PaymentChart, ProfileChart, ServiceChart, ServiceProfitabilityChart, ConcentrationChart };
+export { TrendChart, PaymentChart, ProfileChart, ServiceChart, ServiceProfitabilityChart, ConcentrationChart, ItemCategoryChart };
 
 const ConcentrationChart: React.FC = () => {
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
@@ -650,6 +650,87 @@ const ConcentrationChart: React.FC = () => {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+};
+
+
+const ItemCategoryChart: React.FC = () => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
+  const { kpis, overallKpis } = useSelector((state: RootState) => state.computed);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current) return;
+    
+    const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
+    if (!kpisData?.ordersByItemCategory) return;
+    
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove();
+    
+    const width = 700, height = 350;
+    const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+    
+    const data = Object.entries(kpisData.ordersByItemCategory)
+      .filter(([_, v]) => v > 0)
+      .map(([label, value]) => ({ label, orders: value, revenue: kpisData.revenueByItemCategory[label] || 0 }))
+      .sort((a, b) => b.orders - a.orders);
+    
+    if (data.length === 0) return;
+    
+    const x = d3.scaleBand().domain(data.map(d => d.label)).range([margin.left, width - margin.right]).padding(0.3);
+    const y = d3.scaleLinear().domain([0, d3.max(data, d => d.orders) || 0]).nice()
+      .range([height - margin.bottom, margin.top]);
+    
+    svg.selectAll('rect')
+      .data(data)
+      .enter()
+      .append('rect')
+      .attr('x', d => x(d.label)!)
+      .attr('y', d => y(d.orders))
+      .attr('width', x.bandwidth())
+      .attr('height', d => height - margin.bottom - y(d.orders))
+      .attr('fill', '#60a5fa')
+      .attr('rx', 4)
+      .attr('cursor', 'pointer')
+      .on('mouseenter', function(event, d) {
+        d3.select(this).attr('fill', '#93c5fd');
+        setTooltip({
+          x: x(d.label)! + x.bandwidth() / 2,
+          y: y(d.orders) - 10,
+          content: `${d.label}\nOrders: ${formatNumber(d.orders)}\nRevenue: ${formatCurrency(d.revenue)}`
+        });
+      })
+      .on('mouseleave', function() {
+        d3.select(this).attr('fill', '#60a5fa');
+        setTooltip(null);
+      });
+    
+    svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
+      .attr('color', '#cccccc')
+      .selectAll('text')
+      .attr('fill', '#666666')
+      .attr('font-size', '12px');
+    svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
+      .attr('color', '#cccccc')
+      .selectAll('text')
+      .attr('fill', '#666666')
+      .attr('font-size', '12px');
+  }, [activeView, selectedMonth, kpis, overallKpis]);
+
+  return (
+    <div style={chartContainerStyle}>
+      <div style={titleStyle}>Item Category Performance</div>
+      <div style={{ position: 'relative' }}>
+        <svg ref={svgRef} width="100%" height="350" viewBox="0 0 700 350" style={{ overflow: 'visible' }} />
+        {tooltip && (
+          <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
+            {tooltip.content}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
