@@ -9,6 +9,7 @@ export interface RawCSVRow {
   payment_channel?: string;
   gross_amount?: string;
   promo_amount?: string;
+  item_category_code?: string;
 }
 
 // Branded types for type safety
