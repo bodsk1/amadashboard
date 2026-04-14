@@ -91,6 +91,7 @@ const Dashboard: React.FC = () => {
             const grossAmount = parseFloat(row.gross_amount) || 0;
             const promoAmount = parseFloat(row.promo_amount) || 0;
             const nettAmount = parseFloat(row.nett_amount) || (grossAmount - promoAmount);
+            const itemCategory = row.item_category_code || 'Unknown';
             
             allOrders.push({
               waybill,
@@ -102,6 +103,7 @@ const Dashboard: React.FC = () => {
               grossAmount,
               promoAmount,
               nettAmount,
+              itemCategory,
             });
             count++;
             
