@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
           if (!response.ok) continue;
           
           const text = await response.text();
-          const result = Papa.parse(text, { header: true, skipEmptyLines: true });
+          const result = Papa.parse(text, { header: true, skipEmptyLines: true, dynamicTyping: false });
           
           let count = 0;
           
