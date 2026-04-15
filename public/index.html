@@ -41,11 +41,7 @@
       background-color: #ffffff;
       color: #000000;
     }
-    #root {
-      position: relative;
-      background-color: #ffffff;
-    }
-    #root::before {
+    body::before {
       content: '';
       position: fixed;
       top: 0;
@@ -57,7 +53,12 @@
       background-size: var(--grid-size) var(--grid-size);
       animation: grid-pulse 8s ease-in-out infinite alternate;
       pointer-events: none;
-      z-index: -1;
+      z-index: 0;
+    }
+    #root {
+      position: relative;
+      background-color: transparent;
+      z-index: 1;
     }
   </style>
 </head>
