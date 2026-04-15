@@ -50,7 +50,7 @@ export interface KPIMetrics {
   promoToRevenueRatio: number;
   averageDiscountPerTransaction: number;
   revenuePerTransactionByService: Record<ServiceType, number>;
-  topCustomersByOrders: Array<{ customerId: string; orderCount: number }>;
+  topCustomersByOrders: Array<{ customerId: string; orderCount: number; profileType: ProfileType }>;
   monthlyActiveUsers: number;
   weeklyActiveUsers: number;
   dailyActiveUsers: number;

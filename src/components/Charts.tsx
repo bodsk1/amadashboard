@@ -591,6 +591,7 @@ const ConcentrationChart: React.FC = () => {
     return {
       rank: index + 1,
       customerId: customer.customerId,
+      profileType: customer.profileType,
       orderCount: customer.orderCount,
       percentage: percentage,
     };
@@ -626,6 +627,16 @@ const ConcentrationChart: React.FC = () => {
     width: '50px',
   };
 
+  const profileTypeBadgeStyle = (profileType: string): React.CSSProperties => ({
+    display: 'inline-block',
+    padding: '4px 8px',
+    borderRadius: '4px',
+    fontSize: '11px',
+    fontWeight: 600,
+    backgroundColor: profileType === 'AAPRO' ? '#e0f2fe' : '#f0fdf4',
+    color: profileType === 'AAPRO' ? '#0369a1' : '#166534',
+  });
+
   return (
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Top 10 Customers by Order Count</div>
@@ -634,6 +645,7 @@ const ConcentrationChart: React.FC = () => {
           <tr>
             <th style={headerCellStyle}>Rank</th>
             <th style={headerCellStyle}>Customer ID</th>
+            <th style={headerCellStyle}>Profile Type</th>
             <th style={headerCellStyle}>Order Count</th>
             <th style={headerCellStyle}>% of Total</th>
           </tr>
@@ -643,6 +655,11 @@ const ConcentrationChart: React.FC = () => {
             <tr key={row.customerId}>
               <td style={rankCellStyle}>{row.rank}</td>
               <td style={cellStyle}>{row.customerId}</td>
+              <td style={cellStyle}>
+                <span style={profileTypeBadgeStyle(row.profileType)}>
+                  {row.profileType}
+                </span>
+              </td>
               <td style={cellStyle}>{formatNumber(row.orderCount)}</td>
               <td style={cellStyle}>{row.percentage.toFixed(2)}%</td>
             </tr>

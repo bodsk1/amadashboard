@@ -94,15 +94,18 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
   });
   
   // New Metric 3: Customer Concentration Risk (by order count)
-  const customerOrderCount: Record<string, number> = {};
+  const customerOrderCount: Record<string, { count: number; profileType: ProfileType }> = {};
   orders.forEach(o => {
-    customerOrderCount[o.customerId] = (customerOrderCount[o.customerId] || 0) + 1;
+    if (!customerOrderCount[o.customerId]) {
+      customerOrderCount[o.customerId] = { count: 0, profileType: o.profileType };
+    }
+    customerOrderCount[o.customerId].count += 1;
   });
   
   const sortedCustomersByOrders = Object.entries(customerOrderCount)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 10)
-    .map(([customerId, orderCount]) => ({ customerId, orderCount }));
+    .map(([customerId, data]) => ({ customerId, orderCount: data.count, profileType: data.profileType }));
   
   const top10OrderCount = sortedCustomersByOrders.reduce((sum, c) => sum + c.orderCount, 0);
   const top10OrderPercentage = totalTransactions > 0 ? (top10OrderCount / totalTransactions) * 100 : 0;

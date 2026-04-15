@@ -195,13 +195,13 @@ const Dashboard: React.FC = () => {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginTop: '24px' }}>
         <div style={{ width: '100%' }}>
-          <ConcentrationChart />
+          <ItemCategoryChart />
         </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginTop: '24px' }}>
         <div style={{ width: '100%' }}>
-          <ItemCategoryChart />
+          <ConcentrationChart />
         </div>
       </div>
 
