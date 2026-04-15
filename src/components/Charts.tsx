@@ -670,8 +670,8 @@ const ItemCategoryChart: React.FC = () => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
     
-    const width = 700, height = 350;
-    const margin = { top: 20, right: 20, bottom: 60, left: 60 };
+    const width = 700, height = 400;
+    const margin = { top: 20, right: 20, bottom: 120, left: 60 };
     
     const data = Object.entries(kpisData.ordersByItemCategory)
       .filter(([_, v]) => v > 0)
@@ -712,7 +712,11 @@ const ItemCategoryChart: React.FC = () => {
       .attr('color', '#cccccc')
       .selectAll('text')
       .attr('fill', '#666666')
-      .attr('font-size', '12px');
+      .attr('font-size', '12px')
+      .attr('text-anchor', 'start')
+      .attr('transform', 'rotate(45)')
+      .attr('dx', '8px')
+      .attr('dy', '4px');
     svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
       .attr('color', '#cccccc')
       .selectAll('text')
@@ -724,7 +728,7 @@ const ItemCategoryChart: React.FC = () => {
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Item Category Performance</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="350" viewBox="0 0 700 350" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="400" viewBox="0 0 700 400" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
