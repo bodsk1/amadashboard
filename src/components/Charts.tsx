@@ -489,7 +489,7 @@ const ServiceChart: React.FC = () => {
   );
 };
 
-const ServiceProfitabilityChart: React.FC = () => {
+const OrdersByServiceChart: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
   const { kpis, overallKpis } = useSelector((state: RootState) => state.computed);
@@ -499,42 +499,41 @@ const ServiceProfitabilityChart: React.FC = () => {
     if (!svgRef.current) return;
     
     const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
-    if (!kpisData?.revenuePerTransactionByService) return;
+    if (!kpisData?.transactionsByService) return;
     
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
     
-    const width = 500, height = 280;
+    const width = 350, height = 280;
     const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-    const data = Object.entries(kpisData.revenuePerTransactionByService)
-      .filter(([_, v]) => v > 0)
-      .map(([label, value]) => ({ label, value }))
-      .sort((a, b) => b.value - a.value);
+    
+    const data = Object.entries(kpisData.transactionsByService)
+      .map(([label, orders]) => ({ label, orders }))
+      .sort((a, b) => b.orders - a.orders);
     
     if (data.length === 0) return;
     
     const x = d3.scaleBand().domain(data.map(d => d.label)).range([margin.left, width - margin.right]).padding(0.3);
-    const y = d3.scaleLinear().domain([0, d3.max(data, d => d.value) || 0]).nice()
+    const y = d3.scaleLinear().domain([0, d3.max(data, d => d.orders) || 0]).nice()
       .range([height - margin.bottom, margin.top]);
     
-    // Color bars - top 3 in green, rest in blue
     svg.selectAll('rect')
       .data(data)
       .enter()
       .append('rect')
       .attr('x', d => x(d.label)!)
-      .attr('y', d => y(d.value))
+      .attr('y', d => y(d.orders))
       .attr('width', x.bandwidth())
-      .attr('height', d => height - margin.bottom - y(d.value))
-      .attr('fill', (d, i) => i < 3 ? '#4ade80' : '#60a5fa')
+      .attr('height', d => height - margin.bottom - y(d.orders))
+      .attr('fill', '#60a5fa')
       .attr('rx', 4)
       .attr('cursor', 'pointer')
       .on('mouseenter', function(event, d) {
         d3.select(this).attr('opacity', 0.8);
         setTooltip({
           x: x(d.label)! + x.bandwidth() / 2,
-          y: y(d.value) - 10,
-          content: `${d.label}\nRevenue/Txn: ${formatCurrency(d.value)}`
+          y: y(d.orders) - 10,
+          content: `${d.label}\nOrders: ${formatNumber(d.orders)}`
         });
       })
       .on('mouseleave', function() {
@@ -547,7 +546,7 @@ const ServiceProfitabilityChart: React.FC = () => {
       .selectAll('text')
       .attr('fill', '#999999')
       .attr('font-size', '12px');
-    svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatCurrency(d as number)))
+    svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
       .attr('color', '#666666')
       .selectAll('text')
       .attr('fill', '#999999')
@@ -556,9 +555,9 @@ const ServiceProfitabilityChart: React.FC = () => {
 
   return (
     <div style={chartContainerStyle}>
-      <div style={titleStyle}>Service Profitability (Revenue per Transaction)</div>
+      <div style={titleStyle}>Orders by Service Type</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="280" viewBox="0 0 500 280" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="280" viewBox="0 0 350 280" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
@@ -569,7 +568,7 @@ const ServiceProfitabilityChart: React.FC = () => {
   );
 };
 
-export { TrendChart, PaymentChart, ProfileChart, ServiceChart, ServiceProfitabilityChart, ConcentrationChart, ItemCategoryChart };
+export { TrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart };
 
 const ConcentrationChart: React.FC = () => {
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);

@@ -71,6 +71,11 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     revenueByService[o.serviceType] = (revenueByService[o.serviceType] || 0) + o.nettAmount;
   });
   
+  const transactionsByService: Record<ServiceType, number> = { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 };
+  orders.forEach(o => {
+    transactionsByService[o.serviceType] = (transactionsByService[o.serviceType] || 0) + 1;
+  });
+  
   const transactionsByPayment: Record<PaymentChannel, number> = { GOPAY: 0, OVO: 0, SHOPEEPAY: 0, QRIS: 0, Refundaja: 0, Free: 0 };
   orders.forEach(o => {
     transactionsByPayment[o.paymentChannel] = (transactionsByPayment[o.paymentChannel] || 0) + 1;
@@ -136,6 +141,7 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     averageOrderValue: totalTransactions > 0 ? totalNett / totalTransactions : 0,
     transactionsByProfile,
     revenueByService,
+    transactionsByService,
     transactionsByPayment,
     momGrowth,
     promoToRevenueRatio,
