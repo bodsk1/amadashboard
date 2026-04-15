@@ -10,6 +10,7 @@ const initialKPIMetrics: KPIMetrics = {
   averageOrderValue: 0,
   transactionsByProfile: { Retail: 0, AAPRO: 0 },
   revenueByService: { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 },
+  transactionsByService: { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 },
   transactionsByPayment: { GOPAY: 0, OVO: 0, SHOPEEPAY: 0, QRIS: 0, Refundaja: 0, Free: 0 },
   momGrowth: 0,
   promoToRevenueRatio: 0,
