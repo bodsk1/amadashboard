@@ -71,9 +71,9 @@ export const SummaryCards: React.FC = () => {
           </div>
         </div>
       )}
-      <div style={{ ...cardStyle, ...(kpisToShow.promoToRevenueRatio > 15 ? { borderLeft: '4px solid #f87171' } : {}) }}>
+      <div style={{ ...cardStyle, ...(kpisToShow.promoToRevenueRatio > 27 ? { borderLeft: '4px solid #f87171' } : { borderLeft: '4px solid #4ade80' }) }}>
         <div style={labelStyle}>Promo-to-Revenue</div>
-        <div style={{ ...valueStyle, color: kpisToShow.promoToRevenueRatio > 15 ? '#f87171' : '#000000' }}>
+        <div style={{ ...valueStyle, color: kpisToShow.promoToRevenueRatio > 27 ? '#f87171' : '#4ade80' }}>
           {kpisToShow.promoToRevenueRatio.toFixed(1)}%
         </div>
       </div>

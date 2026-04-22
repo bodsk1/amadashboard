@@ -191,7 +191,17 @@ const PaymentChart: React.FC = () => {
     
     if (data.length === 0) return;
     
-    const colors = d3.scaleOrdinal(d3.schemeTableau10).domain(data.map(d => d.label));
+    // Fixed color mapping per payment channel
+    const paymentColors: Record<string, string> = {
+      'GOPAY': '#00AA13',
+      'OVO': '#4C3494',
+      'SHOPEEPAY': '#EE4D2D',
+      'QRIS': '#FF6B00',
+      'Refundaja': '#60a5fa',
+      'Free': '#9ca3af',
+    };
+    const colors = (label: string) => paymentColors[label] || '#94a3b8';
+    
     const total = d3.sum(data, d => d.value);
     
     const pie = d3.pie<{ label: string; value: number }>().value(d => d.value).sort(null);
@@ -205,7 +215,7 @@ const PaymentChart: React.FC = () => {
       .enter()
       .append('path')
       .attr('d', arc as any)
-      .attr('fill', d => colors(d.data.label) as string)
+      .attr('fill', d => colors(d.data.label))
       .attr('stroke', '#ffffff')
       .attr('stroke-width', 2)
       .attr('cursor', 'pointer')
@@ -235,7 +245,7 @@ const PaymentChart: React.FC = () => {
       })
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
-      .attr('fill', '#000')
+      .attr('fill', '#fff')
       .attr('font-size', '10px')
       .attr('font-weight', 'bold')
       .attr('pointer-events', 'none')
@@ -263,7 +273,7 @@ const PaymentChart: React.FC = () => {
         d3.select(this).append('rect')
           .attr('width', 12)
           .attr('height', 12)
-          .attr('fill', colors(d.label) as string)
+          .attr('fill', colors(d.label))
           .attr('rx', 2);
         
         d3.select(this).append('text')
