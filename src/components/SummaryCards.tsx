@@ -36,16 +36,34 @@ const negativeStyle: React.CSSProperties = { color: '#f87171' };
 export const SummaryCards: React.FC = () => {
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
   const { kpis, overallKpis } = useSelector((state: RootState) => state.computed);
+  const { months } = useSelector((state: RootState) => state.data);
   
   const kpisToShow = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
   
   if (!kpisToShow) return null;
   
+  // Calculate parcel movement (MoM for transactions)
+  let parcelMovement = 0;
+  if (activeView === 'monthly' && selectedMonth) {
+    const currentIndex = months.indexOf(selectedMonth);
+    if (currentIndex > 0) {
+      const prevMonth = months[currentIndex - 1];
+      const prevTransactions = kpis[prevMonth]?.totalTransactions || 0;
+      const currentTransactions = kpisToShow.totalTransactions;
+      parcelMovement = prevTransactions > 0 ? ((currentTransactions - prevTransactions) / prevTransactions) * 100 : 0;
+    }
+  }
+  
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
       <div style={cardStyle}>
-        <div style={labelStyle}>Total Transactions</div>
+        <div style={labelStyle}>Total Parcels</div>
         <div style={valueStyle}>{formatNumber(kpisToShow.totalTransactions)}</div>
+        {activeView === 'monthly' && parcelMovement !== 0 && (
+          <div style={{ fontSize: '12px', marginTop: '4px', color: parcelMovement >= 0 ? '#4ade80' : '#f87171', fontWeight: 600 }}>
+            {parcelMovement >= 0 ? '↑' : '↓'} {Math.abs(parcelMovement).toFixed(1)}% MoM
+          </div>
+        )}
       </div>
       <div style={cardStyle}>
         <div style={labelStyle}>Total Gross</div>
@@ -65,7 +83,7 @@ export const SummaryCards: React.FC = () => {
       </div>
       {activeView === 'monthly' && (
         <div style={cardStyle}>
-          <div style={labelStyle}>MoM Growth</div>
+          <div style={labelStyle}>Revenue MoM Growth</div>
           <div style={{ ...valueStyle, ...(kpisToShow.momGrowth >= 0 ? { color: '#4ade80' } : { color: '#f87171' }) }}>
             {formatPercent(kpisToShow.momGrowth)}
           </div>
