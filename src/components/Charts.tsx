@@ -37,6 +37,257 @@ const tooltipStyle: React.CSSProperties = {
   border: '1px solid #e0e0e0',
 };
 
+const RevenueTrendChart: React.FC = () => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const { months } = useSelector((state: RootState) => state.data);
+  const { kpis } = useSelector((state: RootState) => state.computed);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current || months.length === 0) return;
+    
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove();
+    
+    const width = 700, height = 300;
+    const margin = { top: 20, right: 80, bottom: 60, left: 80 };
+    
+    const data = months.map((m, i) => {
+      const nett = kpis[m]?.totalNett || 0;
+      const prevNett = i > 0 ? (kpis[months[i - 1]]?.totalNett || 0) : 0;
+      const momGrowth = prevNett > 0 ? ((nett - prevNett) / prevNett) * 100 : 0;
+      
+      return {
+        month: m,
+        gross: kpis[m]?.totalGross || 0,
+        promo: kpis[m]?.totalPromo || 0,
+        nett: nett,
+        momGrowth: momGrowth,
+      };
+    });
+    
+    if (data.length === 0) return;
+    
+    const x = d3.scalePoint<string>().domain(months).range([margin.left, width - margin.right]).padding(0.5);
+    const maxY = d3.max(data, d => Math.max(d.gross, d.nett)) || 0;
+    const y = d3.scaleLinear().domain([0, maxY * 1.1]).nice()
+      .range([height - margin.bottom, margin.top]);
+    
+    const line = (key: keyof typeof data[0]) => d3.line<typeof data[0]>()
+      .x(d => x(d.month)!)
+      .y(d => y(d[key] as number))
+      .curve(d3.curveMonotoneX);
+    
+    const colors = { gross: '#60a5fa', promo: '#f472b6', nett: '#4ade80' };
+    
+    Object.entries(colors).forEach(([key, color]) => {
+      svg.append('path')
+        .datum(data)
+        .attr('fill', 'none')
+        .attr('stroke', color)
+        .attr('stroke-width', 2.5)
+        .attr('d', line(key as keyof typeof data[0]));
+        
+      svg.selectAll(`.dot-${key}`)
+        .data(data)
+        .enter()
+        .append('circle')
+        .attr('cx', d => x(d.month)!)
+        .attr('cy', d => y(d[key as keyof typeof data[0]] as number))
+        .attr('r', 5)
+        .attr('fill', color)
+        .attr('cursor', 'pointer')
+        .on('mouseenter', (event, d) => {
+          const rect = svgRef.current?.getBoundingClientRect();
+          if (rect) {
+            const momText = d.momGrowth !== 0 ? `\nMoM Growth: ${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%` : '';
+            setTooltip({
+              x: event.clientX - rect.left,
+              y: event.clientY - rect.top - 60,
+              content: `${d.month}${momText}\n${key.charAt(0).toUpperCase() + key.slice(1)}: ${formatCurrency(d[key as keyof typeof d] as number)}`
+            });
+          }
+        })
+        .on('mouseleave', () => setTooltip(null));
+    });
+    
+    // Add MoM growth labels above each month (except first)
+    svg.selectAll('text.mom-label')
+      .data(data.slice(1))
+      .enter()
+      .append('text')
+      .attr('class', 'mom-label')
+      .attr('x', (d, i) => x(d.month)!)
+      .attr('y', margin.top - 5)
+      .attr('text-anchor', 'middle')
+      .attr('fill', d => d.momGrowth >= 0 ? '#4ade80' : '#f87171')
+      .attr('font-size', '12px')
+      .attr('font-weight', 'bold')
+      .text(d => `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+    
+    svg.append('g')
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x))
+      .attr('color', '#cccccc')
+      .selectAll('text')
+      .attr('fill', '#666666')
+      .attr('font-size', '12px');
+      
+    svg.append('g')
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).tickFormat(d => formatCurrency(d as number)))
+      .attr('color', '#cccccc')
+      .selectAll('text')
+      .attr('fill', '#666666')
+      .attr('font-size', '12px');
+    
+    const legend = svg.append('g').attr('transform', `translate(${width - 70}, 20)`);
+    Object.entries(colors).forEach(([key, color], i) => {
+      legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', color);
+      legend.append('text').attr('x', 18).attr('y', i * 20 + 10).text(key.charAt(0).toUpperCase() + key.slice(1))
+        .attr('fill', '#000').attr('font-size', '11px');
+    });
+  }, [months, kpis]);
+
+  return (
+    <div style={chartContainerStyle}>
+      <div style={titleStyle}>Revenue Trend (Month-over-Month)</div>
+      <div style={{ position: 'relative' }}>
+        {months.length === 0 ? (
+          <div style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '50px' }}>No data</div>
+        ) : (
+          <svg ref={svgRef} width="100%" height="300" viewBox="0 0 700 300" style={{ overflow: 'visible' }} />
+        )}
+        {tooltip && (
+          <div style={{ ...tooltipStyle, left: tooltip.x, top: tooltip.y, whiteSpace: 'pre-line' }}>
+            {tooltip.content}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const OrderTrendChart: React.FC = () => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const { months } = useSelector((state: RootState) => state.data);
+  const { kpis } = useSelector((state: RootState) => state.computed);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current || months.length === 0) return;
+    
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove();
+    
+    const width = 700, height = 300;
+    const margin = { top: 20, right: 80, bottom: 60, left: 80 };
+    
+    const data = months.map((m, i) => {
+      const orders = kpis[m]?.totalTransactions || 0;
+      const prevOrders = i > 0 ? (kpis[months[i - 1]]?.totalTransactions || 0) : 0;
+      const momGrowth = prevOrders > 0 ? ((orders - prevOrders) / prevOrders) * 100 : 0;
+      
+      return {
+        month: m,
+        orders: orders,
+        momGrowth: momGrowth,
+      };
+    });
+    
+    if (data.length === 0) return;
+    
+    const x = d3.scalePoint<string>().domain(months).range([margin.left, width - margin.right]).padding(0.5);
+    const maxY = d3.max(data, d => d.orders) || 0;
+    const y = d3.scaleLinear().domain([0, maxY * 1.1]).nice()
+      .range([height - margin.bottom, margin.top]);
+    
+    const line = d3.line<typeof data[0]>()
+      .x(d => x(d.month)!)
+      .y(d => y(d.orders))
+      .curve(d3.curveMonotoneX);
+    
+    const color = '#8b5cf6';
+    
+    svg.append('path')
+      .datum(data)
+      .attr('fill', 'none')
+      .attr('stroke', color)
+      .attr('stroke-width', 2.5)
+      .attr('d', line);
+      
+    svg.selectAll('.dot-orders')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr('cx', d => x(d.month)!)
+      .attr('cy', d => y(d.orders))
+      .attr('r', 5)
+      .attr('fill', color)
+      .attr('cursor', 'pointer')
+      .on('mouseenter', (event, d) => {
+        const rect = svgRef.current?.getBoundingClientRect();
+        if (rect) {
+          const momText = d.momGrowth !== 0 ? `\nMoM Growth: ${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%` : '';
+          setTooltip({
+            x: event.clientX - rect.left,
+            y: event.clientY - rect.top - 60,
+            content: `${d.month}${momText}\nOrders: ${formatNumber(d.orders)}`
+          });
+        }
+      })
+      .on('mouseleave', () => setTooltip(null));
+    
+    // Add MoM growth labels above each month (except first)
+    svg.selectAll('text.mom-label')
+      .data(data.slice(1))
+      .enter()
+      .append('text')
+      .attr('class', 'mom-label')
+      .attr('x', (d, i) => x(d.month)!)
+      .attr('y', margin.top - 5)
+      .attr('text-anchor', 'middle')
+      .attr('fill', d => d.momGrowth >= 0 ? '#4ade80' : '#f87171')
+      .attr('font-size', '12px')
+      .attr('font-weight', 'bold')
+      .text(d => `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+    
+    svg.append('g')
+      .attr('transform', `translate(0,${height - margin.bottom})`)
+      .call(d3.axisBottom(x))
+      .attr('color', '#cccccc')
+      .selectAll('text')
+      .attr('fill', '#666666')
+      .attr('font-size', '12px');
+      
+    svg.append('g')
+      .attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
+      .attr('color', '#cccccc')
+      .selectAll('text')
+      .attr('fill', '#666666')
+      .attr('font-size', '12px');
+  }, [months, kpis]);
+
+  return (
+    <div style={chartContainerStyle}>
+      <div style={titleStyle}>Order Trend (Month-over-Month)</div>
+      <div style={{ position: 'relative' }}>
+        {months.length === 0 ? (
+          <div style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '50px' }}>No data</div>
+        ) : (
+          <svg ref={svgRef} width="100%" height="300" viewBox="0 0 700 300" style={{ overflow: 'visible' }} />
+        )}
+        {tooltip && (
+          <div style={{ ...tooltipStyle, left: tooltip.x, top: tooltip.y, whiteSpace: 'pre-line' }}>
+            {tooltip.content}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const TrendChart: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const { months } = useSelector((state: RootState) => state.data);
@@ -578,7 +829,7 @@ const OrdersByServiceChart: React.FC = () => {
   );
 };
 
-export { TrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart };
+export { TrendChart, RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart };
 
 const ConcentrationChart: React.FC = () => {
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
