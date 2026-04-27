@@ -193,14 +193,20 @@ const Dashboard: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
         <div style={{ minWidth: 0 }}>
           <ProfileChart />
+          {/* Top 10 Customers as detail under Profile Distribution */}
+          <div style={{ marginTop: '16px' }}>
+            <details style={{ background: '#f5f5f5', borderRadius: '8px', padding: '16px', border: '1px solid #e0e0e0' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#666666', fontFamily: "'Alliance No. 2', sans-serif", userSelect: 'none' }}>
+                📊 View Top 10 Customers by Profile
+              </summary>
+              <div style={{ marginTop: '16px' }}>
+                <ConcentrationChart />
+              </div>
+            </details>
+          </div>
         </div>
         <div style={{ minWidth: 0 }}>
           <PaymentChart />
-        </div>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginTop: '24px' }}>
-        <div style={{ width: '100%' }}>
-          <ConcentrationChart />
         </div>
       </div>
       

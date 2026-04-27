@@ -936,74 +936,193 @@ const ItemCategoryChart: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
   const { kpis, overallKpis } = useSelector((state: RootState) => state.computed);
+  const { months } = useSelector((state: RootState) => state.data);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
 
   useEffect(() => {
     if (!svgRef.current) return;
     
-    const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
-    if (!kpisData?.ordersByItemCategory) return;
-    
-    const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
-    
-    const width = 700, height = 400;
-    const margin = { top: 20, right: 20, bottom: 120, left: 60 };
-    
-    const data = Object.entries(kpisData.ordersByItemCategory)
-      .filter(([_, v]) => v > 0)
-      .map(([label, value]) => ({ label, orders: value, revenue: kpisData.revenueByItemCategory[label] || 0 }))
-      .sort((a, b) => b.orders - a.orders);
-    
-    if (data.length === 0) return;
-    
-    const x = d3.scaleBand().domain(data.map(d => d.label)).range([margin.left, width - margin.right]).padding(0.3);
-    const y = d3.scaleLinear().domain([0, d3.max(data, d => d.orders) || 0]).nice()
-      .range([height - margin.bottom, margin.top]);
-    
-    svg.selectAll('rect')
-      .data(data)
-      .enter()
-      .append('rect')
-      .attr('x', d => x(d.label)!)
-      .attr('y', d => y(d.orders))
-      .attr('width', x.bandwidth())
-      .attr('height', d => height - margin.bottom - y(d.orders))
-      .attr('fill', '#60a5fa')
-      .attr('rx', 4)
-      .attr('cursor', 'pointer')
-      .on('mouseenter', function(event, d) {
-        d3.select(this).attr('fill', '#93c5fd');
-        setTooltip({
-          x: x(d.label)! + x.bandwidth() / 2,
-          y: y(d.orders) - 10,
-          content: `${d.label}\nOrders: ${formatNumber(d.orders)}\nRevenue: ${formatCurrency(d.revenue)}`
+    // For monthly view, show bar chart
+    if (activeView === 'monthly') {
+      const kpisData = selectedMonth ? kpis[selectedMonth] : overallKpis;
+      if (!kpisData?.ordersByItemCategory) return;
+      
+      const svg = d3.select(svgRef.current);
+      svg.selectAll('*').remove();
+      
+      const width = 700, height = 400;
+      const margin = { top: 20, right: 20, bottom: 120, left: 60 };
+      
+      const data = Object.entries(kpisData.ordersByItemCategory)
+        .filter(([_, v]) => v > 0)
+        .map(([label, value]) => ({ label, orders: value, revenue: kpisData.revenueByItemCategory[label] || 0 }))
+        .sort((a, b) => b.orders - a.orders);
+      
+      if (data.length === 0) return;
+      
+      const x = d3.scaleBand().domain(data.map(d => d.label)).range([margin.left, width - margin.right]).padding(0.3);
+      const y = d3.scaleLinear().domain([0, d3.max(data, d => d.orders) || 0]).nice()
+        .range([height - margin.bottom, margin.top]);
+      
+      svg.selectAll('rect')
+        .data(data)
+        .enter()
+        .append('rect')
+        .attr('x', d => x(d.label)!)
+        .attr('y', d => y(d.orders))
+        .attr('width', x.bandwidth())
+        .attr('height', d => height - margin.bottom - y(d.orders))
+        .attr('fill', '#60a5fa')
+        .attr('rx', 4)
+        .attr('cursor', 'pointer')
+        .on('mouseenter', function(event, d) {
+          d3.select(this).attr('fill', '#93c5fd');
+          setTooltip({
+            x: x(d.label)! + x.bandwidth() / 2,
+            y: y(d.orders) - 10,
+            content: `${d.label}\nOrders: ${formatNumber(d.orders)}\nRevenue: ${formatCurrency(d.revenue)}`
+          });
+        })
+        .on('mouseleave', function() {
+          d3.select(this).attr('fill', '#60a5fa');
+          setTooltip(null);
         });
-      })
-      .on('mouseleave', function() {
-        d3.select(this).attr('fill', '#60a5fa');
-        setTooltip(null);
+      
+      svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
+        .attr('color', '#cccccc')
+        .selectAll('text')
+        .attr('fill', '#666666')
+        .attr('font-size', '12px')
+        .attr('text-anchor', 'start')
+        .attr('transform', 'rotate(45)')
+        .attr('dx', '8px')
+        .attr('dy', '4px');
+      svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
+        .attr('color', '#cccccc')
+        .selectAll('text')
+        .attr('fill', '#666666')
+        .attr('font-size', '12px');
+    } else {
+      // For overall view, show line chart with top 5 categories over time
+      const svg = d3.select(svgRef.current);
+      svg.selectAll('*').remove();
+      
+      if (months.length === 0) return;
+      
+      const width = 700, height = 400;
+      const margin = { top: 40, right: 120, bottom: 60, left: 60 };
+      
+      // Get top 5 categories overall
+      const allCategories: Record<string, number> = {};
+      months.forEach(m => {
+        const monthKpis = kpis[m];
+        if (monthKpis?.ordersByItemCategory) {
+          Object.entries(monthKpis.ordersByItemCategory).forEach(([cat, count]) => {
+            allCategories[cat] = (allCategories[cat] || 0) + count;
+          });
+        }
       });
-    
-    svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
-      .attr('color', '#cccccc')
-      .selectAll('text')
-      .attr('fill', '#666666')
-      .attr('font-size', '12px')
-      .attr('text-anchor', 'start')
-      .attr('transform', 'rotate(45)')
-      .attr('dx', '8px')
-      .attr('dy', '4px');
-    svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
-      .attr('color', '#cccccc')
-      .selectAll('text')
-      .attr('fill', '#666666')
-      .attr('font-size', '12px');
-  }, [activeView, selectedMonth, kpis, overallKpis]);
+      
+      const top5Categories = Object.entries(allCategories)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([cat]) => cat);
+      
+      if (top5Categories.length === 0) return;
+      
+      // Build data for line chart
+      const lineData = top5Categories.map(category => ({
+        category,
+        values: months.map(m => ({
+          month: m,
+          orders: kpis[m]?.ordersByItemCategory[category] || 0
+        }))
+      }));
+      
+      const x = d3.scalePoint<string>().domain(months).range([margin.left, width - margin.right]).padding(0.5);
+      const maxY = d3.max(lineData, d => d3.max(d.values, v => v.orders)) || 0;
+      const y = d3.scaleLinear().domain([0, maxY * 1.1]).nice()
+        .range([height - margin.bottom, margin.top]);
+      
+      const colors = d3.scaleOrdinal(d3.schemeTableau10).domain(top5Categories);
+      
+      const line = d3.line<{ month: string; orders: number }>()
+        .x(d => x(d.month)!)
+        .y(d => y(d.orders))
+        .curve(d3.curveMonotoneX);
+      
+      lineData.forEach(catData => {
+        const color = colors(catData.category) as string;
+        
+        svg.append('path')
+          .datum(catData.values)
+          .attr('fill', 'none')
+          .attr('stroke', color)
+          .attr('stroke-width', 2.5)
+          .attr('d', line);
+        
+        svg.selectAll(`.dot-${catData.category}`)
+          .data(catData.values)
+          .enter()
+          .append('circle')
+          .attr('cx', d => x(d.month)!)
+          .attr('cy', d => y(d.orders))
+          .attr('r', 4)
+          .attr('fill', color)
+          .attr('cursor', 'pointer')
+          .on('mouseenter', (event, d) => {
+            const rect = svgRef.current?.getBoundingClientRect();
+            if (rect) {
+              setTooltip({
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top - 60,
+                content: `${catData.category}\n${d.month}\nOrders: ${formatNumber(d.orders)}`
+              });
+            }
+          })
+          .on('mouseleave', () => setTooltip(null));
+      });
+      
+      svg.append('g')
+        .attr('transform', `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x))
+        .attr('color', '#cccccc')
+        .selectAll('text')
+        .attr('fill', '#666666')
+        .attr('font-size', '12px');
+        
+      svg.append('g')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
+        .attr('color', '#cccccc')
+        .selectAll('text')
+        .attr('fill', '#666666')
+        .attr('font-size', '12px');
+      
+      // Add legend
+      const legend = svg.append('g').attr('transform', `translate(${width - 110}, 40)`);
+      top5Categories.forEach((cat, i) => {
+        legend.append('rect')
+          .attr('x', 0)
+          .attr('y', i * 20)
+          .attr('width', 12)
+          .attr('height', 12)
+          .attr('fill', colors(cat) as string);
+        legend.append('text')
+          .attr('x', 18)
+          .attr('y', i * 20 + 10)
+          .text(cat.length > 15 ? cat.substring(0, 15) + '...' : cat)
+          .attr('fill', '#000')
+          .attr('font-size', '11px');
+      });
+    }
+  }, [activeView, selectedMonth, kpis, overallKpis, months]);
 
   return (
     <div style={chartContainerStyle}>
-      <div style={titleStyle}>Item Category Performance</div>
+      <div style={titleStyle}>
+        {activeView === 'overall' ? 'Top 5 Item Categories - Trend' : 'Item Category Performance'}
+      </div>
       <div style={{ position: 'relative' }}>
         <svg ref={svgRef} width="100%" height="400" viewBox="0 0 700 400" style={{ overflow: 'visible' }} />
         {tooltip && (
