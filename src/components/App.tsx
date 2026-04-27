@@ -169,6 +169,12 @@ const Dashboard: React.FC = () => {
 
       <SummaryCards />
       
+      {/* Section 1: Trends */}
+      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
+          📈 Performance Trends
+        </h2>
+      </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
         <div style={{ minWidth: 0 }}>
           <RevenueTrendChart />
@@ -178,33 +184,50 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
       
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginTop: '24px' }}>
-        <div style={{ minWidth: 0 }}>
-          <PaymentChart />
-        </div>
+      {/* Section 2: Customer Segments */}
+      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
+          👥 Customer Segments
+        </h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
         <div style={{ minWidth: 0 }}>
           <ProfileChart />
         </div>
-      </div>
-      
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginTop: '24px' }}>
         <div style={{ minWidth: 0 }}>
-          <ServiceChart />
-        </div>
-        <div style={{ minWidth: 0 }}>
-          <OrdersByServiceChart />
+          <PaymentChart />
         </div>
       </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginTop: '24px' }}>
-        <div style={{ width: '100%' }}>
-          <ItemCategoryChart />
-        </div>
-      </div>
-
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginTop: '24px' }}>
         <div style={{ width: '100%' }}>
           <ConcentrationChart />
+        </div>
+      </div>
+      
+      {/* Section 3: Service Performance */}
+      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
+          📦 Service Performance
+        </h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+        <div style={{ minWidth: 0 }}>
+          <OrdersByServiceChart />
+        </div>
+        <div style={{ minWidth: 0 }}>
+          <ServiceChart />
+        </div>
+      </div>
+
+      {/* Section 4: Product Categories */}
+      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
+          🏷️ Product Categories
+        </h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
+        <div style={{ width: '100%' }}>
+          <ItemCategoryChart />
         </div>
       </div>
 
