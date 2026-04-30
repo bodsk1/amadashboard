@@ -190,27 +190,37 @@ const Dashboard: React.FC = () => {
           👥 Customer Segments
         </h2>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: '24px' }}>
         <div style={{ minWidth: 0 }}>
           <ProfileChart />
-          {/* Top 10 Customers as detail under Profile Distribution */}
-          <div style={{ marginTop: '16px' }}>
-            <details style={{ background: '#f5f5f5', borderRadius: '8px', padding: '16px', border: '1px solid #e0e0e0' }}>
-              <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#666666', fontFamily: "'Alliance No. 2', sans-serif", userSelect: 'none' }}>
-                📊 View Top 10 Customers by Profile
-              </summary>
-              <div style={{ marginTop: '16px' }}>
-                <ConcentrationChart />
-              </div>
-            </details>
-          </div>
         </div>
         <div style={{ minWidth: 0 }}>
-          <PaymentChart />
+          {/* Placeholder for balance - could add another customer metric here */}
+        </div>
+      </div>
+      {/* Top 10 Customers - Full Width, Always Visible */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
+        <div style={{ width: '100%' }}>
+          <ConcentrationChart />
         </div>
       </div>
       
-      {/* Section 3: Service Performance */}
+      {/* Section 3: Transaction Behavior */}
+      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
+        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
+          💳 Transaction Behavior
+        </h2>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
+        <div style={{ minWidth: 0 }}>
+          <PaymentChart />
+        </div>
+        <div style={{ minWidth: 0 }}>
+          {/* Placeholder for future transaction metrics */}
+        </div>
+      </div>
+      
+      {/* Section 4: Service Performance */}
       <div style={{ marginTop: '40px', marginBottom: '16px' }}>
         <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
           📦 Service Performance
@@ -225,7 +235,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Section 4: Product Categories */}
+      {/* Section 5: Product Categories */}
       <div style={{ marginTop: '40px', marginBottom: '16px' }}>
         <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
           🏷️ Product Categories
