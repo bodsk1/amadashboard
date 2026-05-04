@@ -50,7 +50,7 @@ const RevenueTrendChart: React.FC = () => {
     svg.selectAll('*').remove();
     
     const width = 700, height = 300;
-    const margin = { top: 20, right: 80, bottom: 60, left: 80 };
+    const margin = { top: 40, right: 80, bottom: 60, left: 80 };
     
     const data = months.map((m, i) => {
       const nett = kpis[m]?.totalNett || 0;
@@ -181,7 +181,7 @@ const OrderTrendChart: React.FC = () => {
     svg.selectAll('*').remove();
     
     const width = 700, height = 300;
-    const margin = { top: 20, right: 80, bottom: 60, left: 80 };
+    const margin = { top: 40, right: 80, bottom: 60, left: 80 };
     
     const data = months.map((m, i) => {
       const orders = kpis[m]?.totalTransactions || 0;
