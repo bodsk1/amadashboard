@@ -50,29 +50,19 @@ const Dashboard: React.FC = () => {
         const allOrders: OrderRecord[] = [];
         const foundMonthsSet = new Set<string>();
 
-        // Fetch list of CSV files from /data/ folder
-        const indexResponse = await fetch('/data/');
-        let dataFiles: string[] = [];
-        
-        if (indexResponse.ok) {
-          const html = await indexResponse.text();
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          const links = doc.querySelectorAll('a');
-          dataFiles = Array.from(links)
-            .map(link => link.getAttribute('href') || '')
-            .filter(href => href.match(/aca_order_\d{8}\.csv$/))
-            .map(href => `/data/${href}`);
-        }
-
-        // Fallback if directory listing not available
-        if (dataFiles.length === 0) {
-          dataFiles = ['/data/aca_order_20260201.csv', '/data/aca_order_20260301.csv', '/data/aca_order_20260401.csv'];
-        }
+        // Static file list (directory listing not available on Vercel)
+        const dataFiles = [
+          '/data/aca_order_20260201.csv',
+          '/data/aca_order_20260301.csv',
+          '/data/aca_order_20260401.csv'
+        ];
 
         for (const file of dataFiles) {
           const response = await fetch(file);
-          if (!response.ok) continue;
+          if (!response.ok) {
+            console.warn(`Failed to load ${file}: ${response.status} ${response.statusText}`);
+            continue;
+          }
           
           const text = await response.text();
           const result = Papa.parse(text, { header: true, skipEmptyLines: true, dynamicTyping: false });
