@@ -2,7 +2,44 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { formatCurrency, formatNumber } from '../utils/formatters';
+import { formatCurrency, formatNumber, formatCompactCurrency } from '../utils/formatters';
+
+const TREND_LINE_COLORS = { gross: '#60a5fa', promo: '#f472b6', nett: '#4ade80' };
+
+const PAYMENT_COLORS: Record<string, string> = {
+  GOPAY: '#00AA13',
+  OVO: '#4C3494',
+  SHOPEEPAY: '#EE4D2D',
+  'SHOPEEPAY/SPAYLATER': '#EE4D2D',
+  QRIS: '#FF6B00',
+  Refundaja: '#60a5fa',
+  Free: '#9ca3af',
+  Sakuaja: '#a78bfa',
+};
+
+const PROFILE_COLORS: Record<string, string> = { Retail: '#60a5fa', AAPRO: '#f472b6' };
+
+type MomData = { month: string; momGrowth: number };
+
+function renderMomLabels(
+  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  data: MomData[],
+  x: d3.ScalePoint<string>,
+  yPos: number
+): void {
+  svg.selectAll('text.mom-label')
+    .data(data)
+    .enter()
+    .append('text')
+    .attr('class', 'mom-label')
+    .attr('x', d => x(d.month)!)
+    .attr('y', yPos)
+    .attr('text-anchor', 'middle')
+    .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
+    .attr('font-size', '11px')
+    .attr('font-weight', 'bold')
+    .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+}
 
 const chartContainerStyle: React.CSSProperties = {
   background: '#f5f5f5',
@@ -78,16 +115,14 @@ const RevenueTrendChart: React.FC = () => {
       .y(d => y(d[key] as number))
       .curve(d3.curveMonotoneX);
     
-    const colors = { gross: '#60a5fa', promo: '#f472b6', nett: '#4ade80' };
-    
-    Object.entries(colors).forEach(([key, color]) => {
+    Object.entries(TREND_LINE_COLORS).forEach(([key, color]) => {
       svg.append('path')
         .datum(data)
         .attr('fill', 'none')
         .attr('stroke', color)
         .attr('stroke-width', 2.5)
         .attr('d', line(key as keyof typeof data[0]));
-        
+
       svg.selectAll(`.dot-${key}`)
         .data(data)
         .enter()
@@ -110,20 +145,8 @@ const RevenueTrendChart: React.FC = () => {
         })
         .on('mouseleave', () => setTooltip(null));
     });
-    
-    // MoM growth labels for all months: first month shows "BASE", rest show +/-%
-    svg.selectAll('text.mom-label')
-      .data(data)
-      .enter()
-      .append('text')
-      .attr('class', 'mom-label')
-      .attr('x', d => x(d.month)!)
-      .attr('y', margin.top - 8)
-      .attr('text-anchor', 'middle')
-      .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
-      .attr('font-size', '11px')
-      .attr('font-weight', 'bold')
-      .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+
+    renderMomLabels(svg, data, x, margin.top - 8);
 
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -136,23 +159,17 @@ const RevenueTrendChart: React.FC = () => {
       .attr('transform', 'rotate(-45)')
       .attr('dx', '-8px')
       .attr('dy', '0px');
-      
+
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).ticks(5).tickFormat(d => {
-        const val = d as number;
-        if (val >= 1000000000) return `Rp ${(val / 1000000000).toFixed(1)}B`;
-        if (val >= 1000000) return `Rp ${(val / 1000000).toFixed(0)}M`;
-        if (val >= 1000) return `Rp ${(val / 1000).toFixed(0)}K`;
-        return `Rp ${val}`;
-      }))
+      .call(d3.axisLeft(y).ticks(5).tickFormat(d => formatCompactCurrency(d as number)))
       .attr('color', '#cccccc')
       .selectAll('text')
       .attr('fill', '#666666')
       .attr('font-size', '10px');
-    
+
     const legend = svg.append('g').attr('transform', `translate(${width - 70}, 20)`);
-    Object.entries(colors).forEach(([key, color], i) => {
+    Object.entries(TREND_LINE_COLORS).forEach(([key, color], i) => {
       legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', color);
       legend.append('text').attr('x', 18).attr('y', i * 20 + 10).text(key.charAt(0).toUpperCase() + key.slice(1))
         .attr('fill', '#000').attr('font-size', '11px');
@@ -247,20 +264,8 @@ const OrderTrendChart: React.FC = () => {
         }
       })
       .on('mouseleave', () => setTooltip(null));
-    
-    // MoM growth labels for all months: first month shows "BASE", rest show +/-%
-    svg.selectAll('text.mom-label')
-      .data(data)
-      .enter()
-      .append('text')
-      .attr('class', 'mom-label')
-      .attr('x', d => x(d.month)!)
-      .attr('y', margin.top - 8)
-      .attr('text-anchor', 'middle')
-      .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
-      .attr('font-size', '11px')
-      .attr('font-weight', 'bold')
-      .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+
+    renderMomLabels(svg, data, x, margin.top - 8);
 
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
@@ -298,137 +303,6 @@ const OrderTrendChart: React.FC = () => {
   );
 };
 
-const TrendChart: React.FC = () => {
-  const svgRef = useRef<SVGSVGElement>(null);
-  const { months } = useSelector((state: RootState) => state.data);
-  const { kpis } = useSelector((state: RootState) => state.computed);
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
-
-  useEffect(() => {
-    if (!svgRef.current || months.length === 0) return;
-    
-    const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
-    
-    const width = 700, height = 350;
-    const margin = { top: 20, right: 80, bottom: 60, left: 80 };
-    
-    const data = months.map((m, i) => {
-      const nett = kpis[m]?.totalNett || 0;
-      const prevNett = i > 0 ? (kpis[months[i - 1]]?.totalNett || 0) : 0;
-      const momGrowth = prevNett > 0 ? ((nett - prevNett) / prevNett) * 100 : 0;
-      
-      return {
-        month: m,
-        gross: kpis[m]?.totalGross || 0,
-        promo: kpis[m]?.totalPromo || 0,
-        nett: nett,
-        momGrowth: momGrowth,
-      };
-    });
-    
-    if (data.length === 0) return;
-    
-    const x = d3.scalePoint<string>().domain(months).range([margin.left, width - margin.right]).padding(0.5);
-    const maxY = d3.max(data, d => Math.max(d.gross, d.nett)) || 0;
-    const y = d3.scaleLinear().domain([0, maxY * 1.1]).nice()
-      .range([height - margin.bottom, margin.top]);
-    
-    const line = (key: keyof typeof data[0]) => d3.line<typeof data[0]>()
-      .x(d => x(d.month)!)
-      .y(d => y(d[key] as number))
-      .curve(d3.curveMonotoneX);
-    
-    const colors = { gross: '#60a5fa', promo: '#f472b6', nett: '#4ade80' };
-    
-    Object.entries(colors).forEach(([key, color]) => {
-      svg.append('path')
-        .datum(data)
-        .attr('fill', 'none')
-        .attr('stroke', color)
-        .attr('stroke-width', 2.5)
-        .attr('d', line(key as keyof typeof data[0]));
-        
-      svg.selectAll(`.dot-${key}`)
-        .data(data)
-        .enter()
-        .append('circle')
-        .attr('cx', d => x(d.month)!)
-        .attr('cy', d => y(d[key as keyof typeof data[0]] as number))
-        .attr('r', 5)
-        .attr('fill', color)
-        .attr('cursor', 'pointer')
-        .on('mouseenter', (event, d) => {
-          const rect = svgRef.current?.getBoundingClientRect();
-          if (rect) {
-            const momText = d.momGrowth !== 0 ? `\nMoM Growth: ${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%` : '';
-            setTooltip({
-              x: event.clientX - rect.left,
-              y: event.clientY - rect.top - 60,
-              content: `${d.month}${momText}\n${key.charAt(0).toUpperCase() + key.slice(1)}: ${formatCurrency(d[key as keyof typeof d] as number)}`
-            });
-          }
-        })
-        .on('mouseleave', () => setTooltip(null));
-    });
-    
-    // MoM growth labels for all months: first month shows "BASE", rest show +/-%
-    svg.selectAll('text.mom-label')
-      .data(data)
-      .enter()
-      .append('text')
-      .attr('class', 'mom-label')
-      .attr('x', d => x(d.month)!)
-      .attr('y', margin.top - 8)
-      .attr('text-anchor', 'middle')
-      .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
-      .attr('font-size', '11px')
-      .attr('font-weight', 'bold')
-      .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
-
-    svg.append('g')
-      .attr('transform', `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x))
-      .attr('color', '#cccccc')
-      .selectAll('text')
-      .attr('fill', '#666666')
-      .attr('font-size', '12px');
-      
-    svg.append('g')
-      .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).tickFormat(d => formatCurrency(d as number)))
-      .attr('color', '#cccccc')
-      .selectAll('text')
-      .attr('fill', '#666666')
-      .attr('font-size', '12px');
-    
-    const legend = svg.append('g').attr('transform', `translate(${width - 70}, 20)`);
-    Object.entries(colors).forEach(([key, color], i) => {
-      legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', color);
-      legend.append('text').attr('x', 18).attr('y', i * 20 + 10).text(key.charAt(0).toUpperCase() + key.slice(1))
-        .attr('fill', '#000').attr('font-size', '11px');
-    });
-  }, [months, kpis]);
-
-  return (
-    <div style={chartContainerStyle}>
-      <div style={titleStyle}>Month-over-Month Trend</div>
-      <div style={{ position: 'relative' }}>
-        {months.length === 0 ? (
-          <div style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '50px' }}>No data</div>
-        ) : (
-          <svg ref={svgRef} width="100%" height="350" viewBox="0 0 700 350" style={{ overflow: 'visible' }} />
-        )}
-        {tooltip && (
-          <div style={{ ...tooltipStyle, left: tooltip.x, top: tooltip.y, whiteSpace: 'pre-line' }}>
-            {tooltip.content}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 const PaymentChart: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
@@ -455,17 +329,7 @@ const PaymentChart: React.FC = () => {
 
     if (data.length === 0) return;
 
-    const paymentColors: Record<string, string> = {
-      'GOPAY': '#00AA13',
-      'OVO': '#4C3494',
-      'SHOPEEPAY': '#EE4D2D',
-      'SHOPEEPAY/SPAYLATER': '#EE4D2D',
-      'QRIS': '#FF6B00',
-      'Refundaja': '#60a5fa',
-      'Free': '#9ca3af',
-      'Sakuaja': '#a78bfa',
-    };
-    const colors = (label: string) => paymentColors[label] || '#94a3b8';
+    const colors = (label: string) => PAYMENT_COLORS[label] || '#94a3b8';
 
     const total = d3.sum(data, d => d.value);
 
@@ -574,7 +438,7 @@ const ProfileChart: React.FC = () => {
 
     if (data.length === 0) return;
 
-    const colors: Record<string, string> = { Retail: '#60a5fa', AAPRO: '#f472b6' };
+    const colors = PROFILE_COLORS;
     const total = d3.sum(data, d => d.value);
 
     const pie = d3.pie<{ label: string; value: number }>().value(d => d.value).sort(null);
@@ -812,7 +676,7 @@ const OrdersByServiceChart: React.FC = () => {
   );
 };
 
-export { TrendChart, RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart };
+export { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart };
 
 const ConcentrationChart: React.FC = () => {
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
