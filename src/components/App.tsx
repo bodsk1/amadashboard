@@ -51,11 +51,11 @@ const Dashboard: React.FC = () => {
         const foundMonthsSet = new Set<string>();
 
         // Static file list (directory listing not available on Vercel)
+        // Temporarily using 3 months to avoid stack overflow
         const dataFiles = [
           '/data/aca_order_20260201.csv',
           '/data/aca_order_20260301.csv',
-          '/data/aca_order_20260401.csv',
-          '/data/aca_order_20260501.csv'
+          '/data/aca_order_20260401.csv'
         ];
 
         for (const file of dataFiles) {
