@@ -69,38 +69,45 @@ const Dashboard: React.FC = () => {
           const result = Papa.parse(text, { header: true, skipEmptyLines: true, dynamicTyping: false });
           
           let count = 0;
+          const batchSize = 5000;
+          const rows = result.data as Record<string, string>[];
           
-          (result.data as Record<string, string>[]).forEach((row: Record<string, string>) => {
-            if (!isValidRow(row)) return;
+          // Process in batches to avoid stack overflow
+          for (let i = 0; i < rows.length; i += batchSize) {
+            const batch = rows.slice(i, i + batchSize);
             
-            const waybill = row.waybill.trim();
-            const createOrderTime = row.create_order_time;
-            const profileType = row.profile_type === 'Business' ? 'AAPRO' : 'Retail';
-            const serviceType = row.service_type;
-            let paymentChannel = row.payment_channel;
-            if (paymentChannel === 'GOPAY QR') paymentChannel = 'QRIS';
-            const grossAmount = parseFloat(row.gross_amount) || 0;
-            const promoAmount = parseFloat(row.promo_amount) || 0;
-            const nettAmount = parseFloat(row.nett_amount) || (grossAmount - promoAmount);
-            const itemCategory = row.item_category_code || 'Unknown';
-            
-            allOrders.push({
-              waybill,
-              createOrderTime: parseDate(createOrderTime),
-              customerId: row.customer_id,
-              profileType: profileType as ProfileType,
-              serviceType: serviceType as ServiceType,
-              paymentChannel: paymentChannel as PaymentChannel,
-              grossAmount,
-              promoAmount,
-              nettAmount,
-              itemCategory,
+            batch.forEach((row: Record<string, string>) => {
+              if (!isValidRow(row)) return;
+              
+              const waybill = row.waybill.trim();
+              const createOrderTime = row.create_order_time;
+              const profileType = row.profile_type === 'Business' ? 'AAPRO' : 'Retail';
+              const serviceType = row.service_type;
+              let paymentChannel = row.payment_channel;
+              if (paymentChannel === 'GOPAY QR') paymentChannel = 'QRIS';
+              const grossAmount = parseFloat(row.gross_amount) || 0;
+              const promoAmount = parseFloat(row.promo_amount) || 0;
+              const nettAmount = parseFloat(row.nett_amount) || (grossAmount - promoAmount);
+              const itemCategory = row.item_category_code || 'Unknown';
+              
+              allOrders.push({
+                waybill,
+                createOrderTime: parseDate(createOrderTime),
+                customerId: row.customer_id,
+                profileType: profileType as ProfileType,
+                serviceType: serviceType as ServiceType,
+                paymentChannel: paymentChannel as PaymentChannel,
+                grossAmount,
+                promoAmount,
+                nettAmount,
+                itemCategory,
+              });
+              count++;
+              
+              const monthStr = getMonthFromDate(createOrderTime);
+              if (monthStr) foundMonthsSet.add(monthStr);
             });
-            count++;
-            
-            const monthStr = getMonthFromDate(createOrderTime);
-            if (monthStr) foundMonthsSet.add(monthStr);
-          });
+          }
           
           setDebug((d: Record<string, string>) => ({ ...d, [file]: `${count} valid` }));
         }
