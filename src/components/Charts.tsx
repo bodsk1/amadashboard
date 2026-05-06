@@ -593,8 +593,13 @@ const ServiceChart: React.FC = () => {
       .attr('color', '#666666')
       .selectAll('text').attr('fill', '#999999').attr('font-size', '12px');
 
+    // 4 evenly log-spaced ticks — avoids the dense subdivision overlap
+    const logMin = Math.log10(minVal * 0.5);
+    const logMax = Math.log10(maxVal * 1.6);
+    const yTicks = [0, 1, 2, 3].map(i => Math.pow(10, logMin + (logMax - logMin) * i / 3));
+
     svg.append('g').attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).ticks(4, '').tickFormat(d => formatCompactCurrency(d as number)))
+      .call(d3.axisLeft(y).tickValues(yTicks).tickFormat(d => formatCompactCurrency(d as number)))
       .attr('color', '#666666')
       .selectAll('text').attr('fill', '#999999').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
@@ -689,8 +694,13 @@ const OrdersByServiceChart: React.FC = () => {
       .attr('color', '#666666')
       .selectAll('text').attr('fill', '#999999').attr('font-size', '12px');
 
+    // 4 evenly log-spaced ticks — avoids the dense subdivision overlap
+    const logMin = Math.log10(minVal * 0.5);
+    const logMax = Math.log10(maxVal * 1.6);
+    const yTicks = [0, 1, 2, 3].map(i => Math.pow(10, logMin + (logMax - logMin) * i / 3));
+
     svg.append('g').attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).ticks(4, '').tickFormat(d => formatCompactNumber(d as number)))
+      .call(d3.axisLeft(y).tickValues(yTicks).tickFormat(d => formatCompactNumber(d as number)))
       .attr('color', '#666666')
       .selectAll('text').attr('fill', '#999999').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
