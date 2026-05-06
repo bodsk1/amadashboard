@@ -111,20 +111,20 @@ const RevenueTrendChart: React.FC = () => {
         .on('mouseleave', () => setTooltip(null));
     });
     
-    // Add MoM growth labels above each month (except first)
+    // MoM growth labels for all months: first month shows "BASE", rest show +/-%
     svg.selectAll('text.mom-label')
-      .data(data.slice(1))
+      .data(data)
       .enter()
       .append('text')
       .attr('class', 'mom-label')
-      .attr('x', (d, i) => x(d.month)!)
-      .attr('y', margin.top - 5)
+      .attr('x', d => x(d.month)!)
+      .attr('y', margin.top - 8)
       .attr('text-anchor', 'middle')
-      .attr('fill', d => d.momGrowth >= 0 ? '#4ade80' : '#f87171')
-      .attr('font-size', '12px')
+      .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
+      .attr('font-size', '11px')
       .attr('font-weight', 'bold')
-      .text(d => `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
-    
+      .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x))
@@ -139,11 +139,17 @@ const RevenueTrendChart: React.FC = () => {
       
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y).tickFormat(d => formatCurrency(d as number)))
+      .call(d3.axisLeft(y).ticks(5).tickFormat(d => {
+        const val = d as number;
+        if (val >= 1000000000) return `Rp ${(val / 1000000000).toFixed(1)}B`;
+        if (val >= 1000000) return `Rp ${(val / 1000000).toFixed(0)}M`;
+        if (val >= 1000) return `Rp ${(val / 1000).toFixed(0)}K`;
+        return `Rp ${val}`;
+      }))
       .attr('color', '#cccccc')
       .selectAll('text')
       .attr('fill', '#666666')
-      .attr('font-size', '12px');
+      .attr('font-size', '10px');
     
     const legend = svg.append('g').attr('transform', `translate(${width - 70}, 20)`);
     Object.entries(colors).forEach(([key, color], i) => {
@@ -184,8 +190,8 @@ const OrderTrendChart: React.FC = () => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
     
-    const width = 700, height = 300;
-    const margin = { top: 40, right: 80, bottom: 60, left: 80 };
+    const width = 700, height = 320;
+    const margin = { top: 40, right: 80, bottom: 80, left: 80 };
     
     const data = months.map((m, i) => {
       const orders = kpis[m]?.totalTransactions || 0;
@@ -242,20 +248,20 @@ const OrderTrendChart: React.FC = () => {
       })
       .on('mouseleave', () => setTooltip(null));
     
-    // Add MoM growth labels above each month (except first)
+    // MoM growth labels for all months: first month shows "BASE", rest show +/-%
     svg.selectAll('text.mom-label')
-      .data(data.slice(1))
+      .data(data)
       .enter()
       .append('text')
       .attr('class', 'mom-label')
-      .attr('x', (d, i) => x(d.month)!)
-      .attr('y', margin.top - 5)
+      .attr('x', d => x(d.month)!)
+      .attr('y', margin.top - 8)
       .attr('text-anchor', 'middle')
-      .attr('fill', d => d.momGrowth >= 0 ? '#4ade80' : '#f87171')
-      .attr('font-size', '12px')
+      .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
+      .attr('font-size', '11px')
       .attr('font-weight', 'bold')
-      .text(d => `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
-    
+      .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x))
@@ -280,7 +286,7 @@ const OrderTrendChart: React.FC = () => {
         {months.length === 0 ? (
           <div style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '50px' }}>No data</div>
         ) : (
-          <svg ref={svgRef} width="100%" height="300" viewBox="0 0 700 300" style={{ overflow: 'visible' }} />
+          <svg ref={svgRef} width="100%" height="320" viewBox="0 0 700 320" style={{ overflow: 'visible' }} />
         )}
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x, top: tooltip.y, whiteSpace: 'pre-line' }}>
@@ -366,20 +372,20 @@ const TrendChart: React.FC = () => {
         .on('mouseleave', () => setTooltip(null));
     });
     
-    // Add MoM growth labels above each month (except first)
+    // MoM growth labels for all months: first month shows "BASE", rest show +/-%
     svg.selectAll('text.mom-label')
-      .data(data.slice(1))
+      .data(data)
       .enter()
       .append('text')
       .attr('class', 'mom-label')
-      .attr('x', (d, i) => x(d.month)!)
-      .attr('y', margin.top - 5)
+      .attr('x', d => x(d.month)!)
+      .attr('y', margin.top - 8)
       .attr('text-anchor', 'middle')
-      .attr('fill', d => d.momGrowth >= 0 ? '#4ade80' : '#f87171')
-      .attr('font-size', '12px')
+      .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
+      .attr('font-size', '11px')
       .attr('font-weight', 'bold')
-      .text(d => `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
-    
+      .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
+
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x))
@@ -431,14 +437,14 @@ const PaymentChart: React.FC = () => {
 
   useEffect(() => {
     if (!svgRef.current) return;
-    
+
     const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
     if (!kpisData?.transactionsByPayment) return;
-    
+
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
-    
-    const width = 500, height = 400;
+
+    const width = 500, height = 460;
     const data = Object.entries(kpisData.transactionsByPayment)
       .filter(([_, v]) => v > 0)
       .map(([label, value]) => ({ label, value }))
@@ -451,9 +457,11 @@ const PaymentChart: React.FC = () => {
       'GOPAY': '#00AA13',
       'OVO': '#4C3494',
       'SHOPEEPAY': '#EE4D2D',
+      'SHOPEEPAY/SPAYLATER': '#EE4D2D',
       'QRIS': '#FF6B00',
       'Refundaja': '#60a5fa',
       'Free': '#9ca3af',
+      'Sakuaja': '#a78bfa',
     };
     const colors = (label: string) => paymentColors[label] || '#94a3b8';
     
@@ -488,9 +496,9 @@ const PaymentChart: React.FC = () => {
         setTooltip(null);
       });
     
-    // Add labels with percentages on the pie slices
+    // Add labels with percentages on the pie slices — only for slices >= 5%
     g.selectAll('text.label')
-      .data(pie(data))
+      .data(pie(data).filter(d => (d.data.value / total) >= 0.05))
       .enter()
       .append('text')
       .attr('class', 'label')
@@ -509,11 +517,11 @@ const PaymentChart: React.FC = () => {
         return `${pct}%`;
       });
     
-    // Add legend below the pie - organized in rows
-    const legendStartY = 240;
+    // Add legend below the pie - organized in rows of 2
+    const legendStartY = 250;
     const itemsPerRow = 2;
     const itemWidth = width / itemsPerRow;
-    
+
     svg.selectAll('g.legend-item')
       .data(data)
       .enter()
@@ -522,7 +530,7 @@ const PaymentChart: React.FC = () => {
       .attr('transform', (d, i) => {
         const row = Math.floor(i / itemsPerRow);
         const col = i % itemsPerRow;
-        return `translate(${col * itemWidth + 20}, ${legendStartY + row * 25})`;
+        return `translate(${col * itemWidth + 20}, ${legendStartY + row * 28})`;
       })
       .each(function(d) {
         d3.select(this).append('rect')
@@ -530,7 +538,7 @@ const PaymentChart: React.FC = () => {
           .attr('height', 12)
           .attr('fill', colors(d.label))
           .attr('rx', 2);
-        
+
         d3.select(this).append('text')
           .attr('x', 18)
           .attr('y', 10)
@@ -544,7 +552,7 @@ const PaymentChart: React.FC = () => {
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Payment Method Distribution</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="400" viewBox="0 0 500 400" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="460" viewBox="0 0 500 460" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
@@ -563,29 +571,34 @@ const ProfileChart: React.FC = () => {
 
   useEffect(() => {
     if (!svgRef.current) return;
-    
+
     const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
     if (!kpisData?.transactionsByProfile) return;
-    
+
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
-    
-    const width = 500, height = 300;
+
+    // Side-by-side layout: pie on left, legend on right
+    const width = 500, height = 260;
+    const pieRadius = 100;
+    const pieCx = 140, pieCy = height / 2;
+    const legendX = 280;
+
     const data = Object.entries(kpisData.transactionsByProfile)
       .filter(([_, v]) => v > 0)
       .map(([label, value]) => ({ label, value }));
-    
+
     if (data.length === 0) return;
-    
+
     const colors: Record<string, string> = { Retail: '#60a5fa', AAPRO: '#f472b6' };
     const total = d3.sum(data, d => d.value);
-    
+
     const pie = d3.pie<{ label: string; value: number }>().value(d => d.value).sort(null);
-    const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(50).outerRadius(100);
-    const arcHover = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(50).outerRadius(115);
-    
-    const g = svg.append('g').attr('transform', `translate(${width/2},${120})`);
-    
+    const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(40).outerRadius(pieRadius);
+    const arcHover = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(40).outerRadius(pieRadius + 12);
+
+    const g = svg.append('g').attr('transform', `translate(${pieCx},${pieCy})`);
+
     g.selectAll('path')
       .data(pie(data))
       .enter()
@@ -599,8 +612,8 @@ const ProfileChart: React.FC = () => {
         d3.select(this).transition().duration(200).attr('d', arcHover as any);
         const pct = ((d.data.value / total) * 100).toFixed(1);
         setTooltip({
-          x: width / 2,
-          y: 120 - 30,
+          x: pieCx,
+          y: pieCy - 30,
           content: `${d.data.label}\n${formatNumber(d.data.value)} orders\n(${pct}%)`
         });
       })
@@ -608,64 +621,46 @@ const ProfileChart: React.FC = () => {
         d3.select(this).transition().duration(200).attr('d', arc as any);
         setTooltip(null);
       });
-    
-    // Add percentage labels on the pie slices
+
+    // Percentage labels on slices (all slices big enough here — only 2)
     g.selectAll('text.label')
       .data(pie(data))
       .enter()
       .append('text')
       .attr('class', 'label')
-      .attr('transform', d => {
-        const pos = arc.centroid(d as any);
-        return `translate(${pos})`;
-      })
+      .attr('transform', d => `translate(${arc.centroid(d as any)})`)
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
-      .attr('fill', '#000')
-      .attr('font-size', '12px')
+      .attr('fill', '#fff')
+      .attr('font-size', '13px')
       .attr('font-weight', 'bold')
       .attr('pointer-events', 'none')
-      .text(d => {
-        const pct = ((d.data.value / total) * 100).toFixed(0);
-        return `${pct}%`;
-      });
-    
-    // Add legend below - organized in rows
-    const legendStartY = 240;
-    const itemsPerRow = 2;
-    const itemWidth = width / itemsPerRow;
-    
-    svg.selectAll('g.legend-item')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'legend-item')
-      .attr('transform', (d, i) => {
-        const row = Math.floor(i / itemsPerRow);
-        const col = i % itemsPerRow;
-        return `translate(${col * itemWidth + 20}, ${legendStartY + row * 25})`;
-      })
-      .each(function(d) {
-        d3.select(this).append('rect')
-          .attr('width', 12)
-          .attr('height', 12)
-          .attr('fill', colors[d.label] || '#888')
-          .attr('rx', 2);
-        
-        d3.select(this).append('text')
-          .attr('x', 18)
-          .attr('y', 10)
-          .attr('fill', '#000')
-          .attr('font-size', '11px')
-          .text(`${d.label}: ${formatNumber(d.value)}`);
-      });
+      .text(d => `${((d.data.value / total) * 100).toFixed(0)}%`);
+
+    // Legend on the right side
+    const legendGroup = svg.append('g').attr('transform', `translate(${legendX}, ${pieCy - (data.length * 36) / 2})`);
+    data.forEach((d, i) => {
+      const pct = ((d.value / total) * 100).toFixed(1);
+      legendGroup.append('rect')
+        .attr('x', 0).attr('y', i * 52)
+        .attr('width', 14).attr('height', 14)
+        .attr('fill', colors[d.label] || '#888').attr('rx', 3);
+      legendGroup.append('text')
+        .attr('x', 22).attr('y', i * 52 + 11)
+        .attr('fill', '#000').attr('font-size', '13px').attr('font-weight', '600')
+        .text(d.label);
+      legendGroup.append('text')
+        .attr('x', 22).attr('y', i * 52 + 28)
+        .attr('fill', '#666').attr('font-size', '11px')
+        .text(`${formatNumber(d.value)} orders (${pct}%)`);
+    });
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Profile Distribution</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="300" viewBox="0 0 500 300" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="260" viewBox="0 0 500 260" />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
