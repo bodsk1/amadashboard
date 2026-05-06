@@ -444,15 +444,17 @@ const PaymentChart: React.FC = () => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const width = 500, height = 460;
+    // Side-by-side layout: pie on left, legend on right
+    const width = 560, height = 260;
+    const pieCx = 130, pieCy = 130, pieOuter = 95, pieInner = 48;
+
     const data = Object.entries(kpisData.transactionsByPayment)
       .filter(([_, v]) => v > 0)
       .map(([label, value]) => ({ label, value }))
       .sort((a, b) => b.value - a.value);
-    
+
     if (data.length === 0) return;
-    
-    // Fixed color mapping per payment channel
+
     const paymentColors: Record<string, string> = {
       'GOPAY': '#00AA13',
       'OVO': '#4C3494',
@@ -464,15 +466,15 @@ const PaymentChart: React.FC = () => {
       'Sakuaja': '#a78bfa',
     };
     const colors = (label: string) => paymentColors[label] || '#94a3b8';
-    
+
     const total = d3.sum(data, d => d.value);
-    
+
     const pie = d3.pie<{ label: string; value: number }>().value(d => d.value).sort(null);
-    const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(50).outerRadius(100);
-    const arcHover = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(50).outerRadius(115);
-    
-    const g = svg.append('g').attr('transform', `translate(${width/2},${120})`);
-    
+    const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(pieInner).outerRadius(pieOuter);
+    const arcHover = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(pieInner).outerRadius(pieOuter + 10);
+
+    const g = svg.append('g').attr('transform', `translate(${pieCx},${pieCy})`);
+
     g.selectAll('path')
       .data(pie(data))
       .enter()
@@ -486,8 +488,8 @@ const PaymentChart: React.FC = () => {
         d3.select(this).transition().duration(200).attr('d', arcHover as any);
         const pct = ((d.data.value / total) * 100).toFixed(1);
         setTooltip({
-          x: width / 2,
-          y: 120 - 40,
+          x: pieCx,
+          y: pieCy - 40,
           content: `${d.data.label}\nOrders: ${formatNumber(d.data.value)}\n(${pct}%)`
         });
       })
@@ -495,64 +497,46 @@ const PaymentChart: React.FC = () => {
         d3.select(this).transition().duration(200).attr('d', arc as any);
         setTooltip(null);
       });
-    
-    // Add labels with percentages on the pie slices — only for slices >= 5%
+
+    // On-pie % labels only for slices >= 5%
     g.selectAll('text.label')
       .data(pie(data).filter(d => (d.data.value / total) >= 0.05))
       .enter()
       .append('text')
       .attr('class', 'label')
-      .attr('transform', d => {
-        const pos = arc.centroid(d as any);
-        return `translate(${pos})`;
-      })
+      .attr('transform', d => `translate(${arc.centroid(d as any)})`)
       .attr('text-anchor', 'middle')
       .attr('dominant-baseline', 'middle')
       .attr('fill', '#fff')
       .attr('font-size', '10px')
       .attr('font-weight', 'bold')
       .attr('pointer-events', 'none')
-      .text(d => {
-        const pct = ((d.data.value / total) * 100).toFixed(0);
-        return `${pct}%`;
-      });
-    
-    // Add legend below the pie - organized in rows of 2
-    const legendStartY = 250;
-    const itemsPerRow = 2;
-    const itemWidth = width / itemsPerRow;
+      .text(d => `${((d.data.value / total) * 100).toFixed(0)}%`);
 
-    svg.selectAll('g.legend-item')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('class', 'legend-item')
-      .attr('transform', (d, i) => {
-        const row = Math.floor(i / itemsPerRow);
-        const col = i % itemsPerRow;
-        return `translate(${col * itemWidth + 20}, ${legendStartY + row * 28})`;
-      })
-      .each(function(d) {
-        d3.select(this).append('rect')
-          .attr('width', 12)
-          .attr('height', 12)
-          .attr('fill', colors(d.label))
-          .attr('rx', 2);
+    // Legend on the right side
+    const legendX = 255;
+    const rowH = 22;
+    const legendStartY = pieCy - (data.length * rowH) / 2;
 
-        d3.select(this).append('text')
-          .attr('x', 18)
-          .attr('y', 10)
-          .attr('fill', '#000')
-          .attr('font-size', '11px')
-          .text(`${d.label}: ${formatNumber(d.value)}`);
-      });
+    const legendGroup = svg.append('g').attr('transform', `translate(${legendX}, ${legendStartY})`);
+    data.forEach((d, i) => {
+      const pct = ((d.value / total) * 100).toFixed(1);
+      legendGroup.append('rect')
+        .attr('x', 0).attr('y', i * rowH)
+        .attr('width', 11).attr('height', 11)
+        .attr('fill', colors(d.label)).attr('rx', 2);
+      legendGroup.append('text')
+        .attr('x', 17).attr('y', i * rowH + 9)
+        .attr('fill', '#000').attr('font-size', '11px')
+        .text(`${d.label}: ${formatNumber(d.value)} (${pct}%)`);
+    });
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Payment Method Distribution</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="460" viewBox="0 0 500 460" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="260" viewBox="0 0 560 260" />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
