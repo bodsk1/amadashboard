@@ -49,8 +49,8 @@ const RevenueTrendChart: React.FC = () => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
     
-    const width = 700, height = 300;
-    const margin = { top: 40, right: 80, bottom: 60, left: 80 };
+    const width = 700, height = 320;
+    const margin = { top: 40, right: 80, bottom: 80, left: 80 };
     
     const data = months.map((m, i) => {
       const nett = kpis[m]?.totalNett || 0;
@@ -160,7 +160,7 @@ const RevenueTrendChart: React.FC = () => {
         {months.length === 0 ? (
           <div style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', padding: '50px' }}>No data</div>
         ) : (
-          <svg ref={svgRef} width="100%" height="300" viewBox="0 0 700 300" style={{ overflow: 'visible' }} />
+          <svg ref={svgRef} width="100%" height="320" viewBox="0 0 700 320" style={{ overflow: 'visible' }} />
         )}
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x, top: tooltip.y, whiteSpace: 'pre-line' }}>
