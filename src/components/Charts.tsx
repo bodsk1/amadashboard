@@ -131,7 +131,11 @@ const RevenueTrendChart: React.FC = () => {
       .attr('color', '#cccccc')
       .selectAll('text')
       .attr('fill', '#666666')
-      .attr('font-size', '12px');
+      .attr('font-size', '11px')
+      .attr('text-anchor', 'end')
+      .attr('transform', 'rotate(-45)')
+      .attr('dx', '-8px')
+      .attr('dy', '0px');
       
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
@@ -566,7 +570,7 @@ const ProfileChart: React.FC = () => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
     
-    const width = 500, height = 400;
+    const width = 500, height = 300;
     const data = Object.entries(kpisData.transactionsByProfile)
       .filter(([_, v]) => v > 0)
       .map(([label, value]) => ({ label, value }));
@@ -661,7 +665,7 @@ const ProfileChart: React.FC = () => {
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Profile Distribution</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="400" viewBox="0 0 500 400" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="300" viewBox="0 0 500 300" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
@@ -687,8 +691,8 @@ const ServiceChart: React.FC = () => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
     
-    const width = 400, height = 250;
-    const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+    const width = 350, height = 280;
+    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
     const data = Object.entries(kpisData.revenueByService)
       .filter(([_, v]) => v > 0)
       .map(([label, value]) => ({ label, value }));
@@ -739,7 +743,7 @@ const ServiceChart: React.FC = () => {
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Revenue by Service Type</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="250" viewBox="0 0 400 250" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="280" viewBox="0 0 350 280" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
