@@ -47,39 +47,43 @@ const Dashboard: React.FC = () => {
     loadData();
   }, [dispatch]);
 
-  if (loading) return <div style={{ color: '#fff', textAlign: 'center', padding: '50px' }}>Loading...</div>;
-  if (error) return <div style={{ color: '#f87171', textAlign: 'center', padding: '50px' }}>Error: {error}</div>;
+  if (loading) return <div className="text-white text-center py-12">Loading...</div>;
+  if (error) return <div className="text-red-400 text-center py-12">Error: {error}</div>;
 
-  const buttonStyle = (isActive: boolean): React.CSSProperties => ({
-    padding: '10px 20px',
-    borderRadius: '20px',
-    border: isActive ? 'none' : '1px solid #e0e0e0',
-    cursor: 'pointer',
-    background: isActive ? '#000000' : '#ffffff',
-    color: isActive ? '#ffffff' : '#000000',
-    fontFamily: "'Alliance No. 2', sans-serif",
-    fontSize: '14px',
-    fontWeight: 500,
-    transition: 'all 0.2s ease',
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-  });
+  const btnBase = 'px-5 py-2.5 rounded-full text-sm font-medium uppercase tracking-wide transition-all duration-200 cursor-pointer';
+  const btnActive = `${btnBase} bg-black text-white border-none`;
+  const btnInactive = `${btnBase} bg-white text-black border border-gray-200 hover:border-gray-400`;
+
+  const sectionHeader = (emoji: string, label: string) => (
+    <div className="mt-10 mb-4">
+      <h2 className="text-lg font-semibold text-black uppercase tracking-widest font-alliance">
+        {emoji} {label}
+      </h2>
+    </div>
+  );
 
   return (
-    <div style={{ minHeight: '100vh', padding: '40px 20px', position: 'relative' }}>
-      <img src="/logo.png" alt="Anteraja" style={{ position: 'absolute', top: '20px', right: '20px', height: '40px', width: 'auto' }} />
-      <h1 style={{ color: '#000000', marginBottom: '32px', fontSize: '32px', fontWeight: 600, letterSpacing: '-0.5px', fontFamily: "'Alliance No. 2', sans-serif" }}>Anteraja App Monthly Dashboard</h1>
+    <div className="min-h-screen px-5 py-10 relative">
+      <img src="/logo.png" alt="Anteraja" className="absolute top-5 right-5 h-10 w-auto" />
+      <h1 className="text-3xl font-semibold text-black mb-8 tracking-tight font-alliance">
+        Anteraja App Monthly Dashboard
+      </h1>
 
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
-        <button onClick={() => dispatch(setActiveView('overall'))} style={buttonStyle(activeView === 'overall')}>
+      {/* View controls */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        <button onClick={() => dispatch(setActiveView('overall'))} className={activeView === 'overall' ? btnActive : btnInactive}>
           Overall View
         </button>
-        <button onClick={() => dispatch(setActiveView('monthly'))} style={buttonStyle(activeView === 'monthly')}>
+        <button onClick={() => dispatch(setActiveView('monthly'))} className={activeView === 'monthly' ? btnActive : btnInactive}>
           Monthly View
         </button>
         {activeView === 'monthly' && (
-          <select value={selectedMonth || ''} onChange={e => dispatch(setSelectedMonth(e.target.value))}
-            style={{ padding: '10px 12px', paddingRight: '32px', borderRadius: '20px', background: '#ffffff', color: '#000000', border: '1px solid #e0e0e0', fontFamily: "'Alliance No. 2', sans-serif", fontSize: '14px', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.5px', appearance: 'none', backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"8\" viewBox=\"0 0 12 8\"><path fill=\"%23000\" d=\"M1 1l5 5 5-5\"/></svg>')", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}>
+          <select
+            value={selectedMonth || ''}
+            onChange={e => dispatch(setSelectedMonth(e.target.value))}
+            className="px-4 py-2.5 pr-8 rounded-full bg-white text-black border border-gray-200 text-sm uppercase tracking-wide cursor-pointer appearance-none font-alliance"
+            style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"8\" viewBox=\"0 0 12 8\"><path fill=\"%23000\" d=\"M1 1l5 5 5-5\"/></svg>')", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
+          >
             {months.map((m: string) => <option key={m} value={m}>{getMonthName(m)}</option>)}
           </select>
         )}
@@ -87,59 +91,39 @@ const Dashboard: React.FC = () => {
 
       <SummaryCards />
 
-      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
-          📈 Performance Trends
-        </h2>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-        <div style={{ minWidth: 0 }}><RevenueTrendChart /></div>
-        <div style={{ minWidth: 0 }}><OrderTrendChart /></div>
+      {sectionHeader('📈', 'Performance Trends')}
+      <div className="grid grid-cols-2 gap-6">
+        <div className="min-w-0"><RevenueTrendChart /></div>
+        <div className="min-w-0"><OrderTrendChart /></div>
       </div>
 
-      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
-          👥 Customer Segments
-        </h2>
+      {sectionHeader('👥', 'Customer Segments')}
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <div className="min-w-0"><ProfileChart /></div>
+        <div />
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: '24px' }}>
-        <div style={{ minWidth: 0 }}><ProfileChart /></div>
-        <div style={{ minWidth: 0 }} />
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
-        <div style={{ width: '100%' }}><ConcentrationChart /></div>
+      <div className="grid grid-cols-1 gap-6">
+        <ConcentrationChart />
       </div>
 
-      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
-          💳 Transaction Behavior
-        </h2>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-        <div style={{ minWidth: 0 }}><PaymentChart /></div>
-        <div style={{ minWidth: 0 }} />
+      {sectionHeader('💳', 'Transaction Behavior')}
+      <div className="grid grid-cols-2 gap-6">
+        <div className="min-w-0"><PaymentChart /></div>
+        <div />
       </div>
 
-      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
-          📦 Service Performance
-        </h2>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-        <div style={{ minWidth: 0 }}><OrdersByServiceChart /></div>
-        <div style={{ minWidth: 0 }}><ServiceChart /></div>
+      {sectionHeader('📦', 'Service Performance')}
+      <div className="grid grid-cols-2 gap-6">
+        <div className="min-w-0"><OrdersByServiceChart /></div>
+        <div className="min-w-0"><ServiceChart /></div>
       </div>
 
-      <div style={{ marginTop: '40px', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#000000', fontFamily: "'Alliance No. 2', sans-serif", textTransform: 'uppercase', letterSpacing: '1px' }}>
-          🏷️ Product Categories
-        </h2>
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
-        <div style={{ width: '100%' }}><ItemCategoryChart /></div>
+      {sectionHeader('🏷️', 'Product Categories')}
+      <div className="grid grid-cols-1 gap-6">
+        <ItemCategoryChart />
       </div>
 
-      <footer style={{ marginTop: '60px', paddingTop: '40px', borderTop: '1px solid #e0e0e0', textAlign: 'center', color: '#999999', fontSize: '12px' }}>
+      <footer className="mt-16 pt-10 border-t border-gray-200 text-center text-gray-400 text-xs">
         <p>Created by Nanda Pratama © 2026</p>
       </footer>
     </div>
