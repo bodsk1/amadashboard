@@ -1,0 +1,129 @@
+{
+  "totalTransactions": 31542,
+  "totalGross": 540538900,
+  "totalPromo": 118681430,
+  "totalNett": 421857470,
+  "averageOrderValue": 13374.468010906094,
+  "transactionsByProfile": {
+    "Retail": 20214,
+    "AAPRO": 11328
+  },
+  "revenueByService": {
+    "REG": 314258696,
+    "SD": 41718524,
+    "DOK": 4750100,
+    "MIC": 32172750,
+    "BIG": 23390800,
+    "ICE": 5566600
+  },
+  "transactionsByService": {
+    "REG": 27710,
+    "SD": 1946,
+    "DOK": 424,
+    "MIC": 763,
+    "BIG": 402,
+    "ICE": 297
+  },
+  "transactionsByPayment": {
+    "GOPAY": 8669,
+    "OVO": 7574,
+    "SHOPEEPAY": 0,
+    "QRIS": 216,
+    "Refundaja": 1683,
+    "Free": 22,
+    "SHOPEEPAY/SPAYLATER": 13368,
+    "Sakuaja": 10
+  },
+  "momGrowth": 1.433827664989935,
+  "promoToRevenueRatio": 21.95613118685815,
+  "averageDiscountPerTransaction": 3762.647581003107,
+  "topCustomersByOrders": [
+    {
+      "customerId": "2000848769",
+      "orderCount": 326,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000091651",
+      "orderCount": 277,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000377791",
+      "orderCount": 238,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001700103",
+      "orderCount": 200,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000058973",
+      "orderCount": 189,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000012285",
+      "orderCount": 178,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000429519",
+      "orderCount": 162,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000106884",
+      "orderCount": 151,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001195726",
+      "orderCount": 127,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000335677",
+      "orderCount": 119,
+      "profileType": "AAPRO"
+    }
+  ],
+  "monthlyActiveUsers": 7821,
+  "weeklyActiveUsers": 3455,
+  "dailyActiveUsers": 1189,
+  "ordersByItemCategory": {
+    "FASHION": 11983,
+    "DOC": 3552,
+    "HOUSEHOLD": 2373,
+    "FNB": 5223,
+    "KESEHATAN": 2838,
+    "MAINAN": 1270,
+    "BEAUTY": 1099,
+    "OTOMOTIF": 246,
+    "ATK": 483,
+    "ELECTRONIC": 1523,
+    "BOOKS": 219,
+    "MEBEL": 436,
+    "COLD_OTHERS": 24,
+    "COLD_FOOD": 256,
+    "COLD_DRINK": 17
+  },
+  "revenueByItemCategory": {
+    "FASHION": 144245893,
+    "DOC": 40866832,
+    "HOUSEHOLD": 34147429,
+    "FNB": 85560710,
+    "KESEHATAN": 31942278,
+    "MAINAN": 17472866,
+    "BEAUTY": 14001157,
+    "OTOMOTIF": 4983845,
+    "ATK": 7112605,
+    "ELECTRONIC": 25364626,
+    "BOOKS": 3923685,
+    "MEBEL": 6668944,
+    "COLD_OTHERS": 501000,
+    "COLD_FOOD": 4729500,
+    "COLD_DRINK": 336100
+  }
+}

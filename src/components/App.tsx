@@ -47,79 +47,41 @@ const Dashboard: React.FC = () => {
     const loadData = async () => {
       dispatch(setLoading(true));
       try {
-        const allOrders: OrderRecord[] = [];
-        const foundMonthsSet = new Set<string>();
-
-        // Static file list (directory listing not available on Vercel)
-        // Temporarily using 3 months to avoid stack overflow
-        const dataFiles = [
-          '/data/aca_order_20260201.csv',
-          '/data/aca_order_20260301.csv',
-          '/data/aca_order_20260401.csv'
-        ];
-
-        for (const file of dataFiles) {
-          const response = await fetch(file);
-          if (!response.ok) {
-            console.warn(`Failed to load ${file}: ${response.status} ${response.statusText}`);
+        // Load months index
+        const indexResponse = await fetch('/data/months-index.json');
+        if (!indexResponse.ok) {
+          throw new Error('Failed to load months index');
+        }
+        
+        const { months } = await indexResponse.json();
+        
+        if (months.length === 0) {
+          throw new Error('No months found in index');
+        }
+        
+        console.log(`📊 Loading KPIs for ${months.length} months:`, months);
+        
+        // Load KPIs for each month
+        const kpisData: Record<string, any> = {};
+        
+        for (const month of months) {
+          const kpiResponse = await fetch(`/data/kpis-${month}.json`);
+          if (!kpiResponse.ok) {
+            console.warn(`Failed to load KPIs for ${month}`);
             continue;
           }
-          
-          const text = await response.text();
-          const result = Papa.parse(text, { header: true, skipEmptyLines: true, dynamicTyping: false });
-          
-          let count = 0;
-          const batchSize = 5000;
-          const rows = result.data as Record<string, string>[];
-          
-          // Process in batches to avoid stack overflow
-          for (let i = 0; i < rows.length; i += batchSize) {
-            const batch = rows.slice(i, i + batchSize);
-            
-            batch.forEach((row: Record<string, string>) => {
-              if (!isValidRow(row)) return;
-              
-              const waybill = row.waybill.trim();
-              const createOrderTime = row.create_order_time;
-              const profileType = row.profile_type === 'Business' ? 'AAPRO' : 'Retail';
-              const serviceType = row.service_type;
-              let paymentChannel = row.payment_channel;
-              if (paymentChannel === 'GOPAY QR') paymentChannel = 'QRIS';
-              const grossAmount = parseFloat(row.gross_amount) || 0;
-              const promoAmount = parseFloat(row.promo_amount) || 0;
-              const nettAmount = parseFloat(row.nett_amount) || (grossAmount - promoAmount);
-              const itemCategory = row.item_category_code || 'Unknown';
-              
-              allOrders.push({
-                waybill,
-                createOrderTime: parseDate(createOrderTime),
-                customerId: row.customer_id,
-                profileType: profileType as ProfileType,
-                serviceType: serviceType as ServiceType,
-                paymentChannel: paymentChannel as PaymentChannel,
-                grossAmount,
-                promoAmount,
-                nettAmount,
-                itemCategory,
-              });
-              count++;
-              
-              const monthStr = getMonthFromDate(createOrderTime);
-              if (monthStr) foundMonthsSet.add(monthStr);
-            });
-          }
-          
-          setDebug((d: Record<string, string>) => ({ ...d, [file]: `${count} valid` }));
+          kpisData[month] = await kpiResponse.json();
         }
-
-        const foundMonths = Array.from(foundMonthsSet).sort();
-        setDebug((d: Record<string, string>) => ({ ...d, total: `${allOrders.length} total`, months: foundMonths.join(', ') }));
-
-        dispatch(setOrders({ orders: allOrders, months: foundMonths }));
-        dispatch(computeKPIs({ orders: allOrders, months: foundMonths }));
-        if (foundMonths.length > 0) dispatch(setSelectedMonth(foundMonths[0]));
+        
+        console.log(`✅ Loaded KPIs for ${Object.keys(kpisData).length} months`);
+        
+        // Dispatch to store
+        dispatch(setOrders({ orders: [], months })); // Empty orders array since we're using pre-aggregated data
+        dispatch(computeKPIs({ orders: [], months, precomputedKPIs: kpisData }));
+        if (months.length > 0) dispatch(setSelectedMonth(months[0]));
+        
       } catch (err: any) {
-        setDebug((d: Record<string, string>) => ({ ...d, error: err.message }));
+        console.error('Error loading data:', err);
         dispatch(setError(err.message || 'Failed to load data'));
       }
     };
