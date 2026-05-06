@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { formatCurrency, formatNumber, formatCompactCurrency } from '../utils/formatters';
+import { formatCurrency, formatNumber, formatCompactCurrency, formatCompactNumber } from '../utils/formatters';
 
 const TREND_LINE_COLORS = { gross: '#60a5fa', promo: '#f472b6', nett: '#4ade80' };
 
@@ -527,25 +527,30 @@ const ServiceChart: React.FC = () => {
 
   useEffect(() => {
     if (!svgRef.current) return;
-    
+
     const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
     if (!kpisData?.revenueByService) return;
-    
+
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
-    
-    const width = 350, height = 280;
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+
+    const width = 350, height = 300;
+    const margin = { top: 32, right: 20, bottom: 40, left: 68 };
     const data = Object.entries(kpisData.revenueByService)
       .filter(([_, v]) => v > 0)
-      .map(([label, value]) => ({ label, value }));
-    
+      .map(([label, value]) => ({ label, value }))
+      .sort((a, b) => b.value - a.value);
+
     if (data.length === 0) return;
-    
+
+    const minVal = d3.min(data, d => d.value) || 1;
+    const maxVal = d3.max(data, d => d.value) || 1;
+
     const x = d3.scaleBand().domain(data.map(d => d.label)).range([margin.left, width - margin.right]).padding(0.3);
-    const y = d3.scaleLinear().domain([0, d3.max(data, d => d.value) || 0]).nice()
+    const y = d3.scaleLog()
+      .domain([minVal * 0.5, maxVal * 1.6])
       .range([height - margin.bottom, margin.top]);
-    
+
     svg.selectAll('rect')
       .data(data)
       .enter()
@@ -569,24 +574,36 @@ const ServiceChart: React.FC = () => {
         d3.select(this).attr('fill', '#60a5fa');
         setTooltip(null);
       });
-    
+
+    // Value labels above each bar
+    svg.selectAll('text.bar-label')
+      .data(data)
+      .enter()
+      .append('text')
+      .attr('class', 'bar-label')
+      .attr('x', d => x(d.label)! + x.bandwidth() / 2)
+      .attr('y', d => y(d.value) - 5)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#333')
+      .attr('font-size', '10px')
+      .attr('font-weight', '600')
+      .text(d => formatCompactCurrency(d.value));
+
     svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
       .attr('color', '#666666')
-      .selectAll('text')
-      .attr('fill', '#999999')
-      .attr('font-size', '12px');
-    svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatCurrency(d as number)))
+      .selectAll('text').attr('fill', '#999999').attr('font-size', '12px');
+
+    svg.append('g').attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).ticks(4, '').tickFormat(d => formatCompactCurrency(d as number)))
       .attr('color', '#666666')
-      .selectAll('text')
-      .attr('fill', '#999999')
-      .attr('font-size', '12px');
+      .selectAll('text').attr('fill', '#999999').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Revenue by Service Type</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="280" viewBox="0 0 350 280" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="300" viewBox="0 0 350 300" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
@@ -605,26 +622,31 @@ const OrdersByServiceChart: React.FC = () => {
 
   useEffect(() => {
     if (!svgRef.current) return;
-    
+
     const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
     if (!kpisData?.transactionsByService) return;
-    
+
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
-    
-    const width = 350, height = 280;
-    const margin = { top: 20, right: 20, bottom: 40, left: 60 };
-    
+
+    const width = 350, height = 300;
+    const margin = { top: 32, right: 20, bottom: 40, left: 56 };
+
     const data = Object.entries(kpisData.transactionsByService)
+      .filter(([_, v]) => v > 0)
       .map(([label, orders]) => ({ label, orders }))
       .sort((a, b) => b.orders - a.orders);
-    
+
     if (data.length === 0) return;
-    
+
+    const minVal = d3.min(data, d => d.orders) || 1;
+    const maxVal = d3.max(data, d => d.orders) || 1;
+
     const x = d3.scaleBand().domain(data.map(d => d.label)).range([margin.left, width - margin.right]).padding(0.3);
-    const y = d3.scaleLinear().domain([0, d3.max(data, d => d.orders) || 0]).nice()
+    const y = d3.scaleLog()
+      .domain([minVal * 0.5, maxVal * 1.6])
       .range([height - margin.bottom, margin.top]);
-    
+
     svg.selectAll('rect')
       .data(data)
       .enter()
@@ -633,11 +655,11 @@ const OrdersByServiceChart: React.FC = () => {
       .attr('y', d => y(d.orders))
       .attr('width', x.bandwidth())
       .attr('height', d => height - margin.bottom - y(d.orders))
-      .attr('fill', '#60a5fa')
+      .attr('fill', '#8b5cf6')
       .attr('rx', 4)
       .attr('cursor', 'pointer')
       .on('mouseenter', function(event, d) {
-        d3.select(this).attr('opacity', 0.8);
+        d3.select(this).attr('fill', '#a78bfa');
         setTooltip({
           x: x(d.label)! + x.bandwidth() / 2,
           y: y(d.orders) - 10,
@@ -645,27 +667,39 @@ const OrdersByServiceChart: React.FC = () => {
         });
       })
       .on('mouseleave', function() {
-        d3.select(this).attr('opacity', 1);
+        d3.select(this).attr('fill', '#8b5cf6');
         setTooltip(null);
       });
-    
+
+    // Value labels above each bar
+    svg.selectAll('text.bar-label')
+      .data(data)
+      .enter()
+      .append('text')
+      .attr('class', 'bar-label')
+      .attr('x', d => x(d.label)! + x.bandwidth() / 2)
+      .attr('y', d => y(d.orders) - 5)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#333')
+      .attr('font-size', '10px')
+      .attr('font-weight', '600')
+      .text(d => formatCompactNumber(d.orders));
+
     svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
       .attr('color', '#666666')
-      .selectAll('text')
-      .attr('fill', '#999999')
-      .attr('font-size', '12px');
-    svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
+      .selectAll('text').attr('fill', '#999999').attr('font-size', '12px');
+
+    svg.append('g').attr('transform', `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y).ticks(4, '').tickFormat(d => formatCompactNumber(d as number)))
       .attr('color', '#666666')
-      .selectAll('text')
-      .attr('fill', '#999999')
-      .attr('font-size', '12px');
+      .selectAll('text').attr('fill', '#999999').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
     <div style={chartContainerStyle}>
       <div style={titleStyle}>Orders by Service Type</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="280" viewBox="0 0 350 280" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" height="300" viewBox="0 0 350 300" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...tooltipStyle, left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}

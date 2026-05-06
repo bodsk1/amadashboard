@@ -7,6 +7,11 @@ export const formatCompactCurrency = (value: number): string => {
   if (value >= 1_000) return `Rp ${(value / 1_000).toFixed(0)}K`;
   return `Rp ${value}`;
 };
+export const formatCompactNumber = (value: number): string => {
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(0)}M`;
+  if (value >= 1_000) return `${(value / 1_000).toFixed(0)}K`;
+  return `${Math.round(value)}`;
+};
 export const getMonthName = (monthStr: string): string => {
   const [year, month] = [monthStr.slice(0, 4), monthStr.slice(4, 6)];
   return new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString("id-ID", { month: "long", year: "numeric" });
