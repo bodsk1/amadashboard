@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { formatCurrency, formatNumber, formatPercent } from '../utils/formatters';
+import { formatCompactCurrency, formatNumber, formatPercent } from '../utils/formatters';
 
 export const SummaryCards: React.FC = () => {
   const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
@@ -43,22 +43,22 @@ export const SummaryCards: React.FC = () => {
 
       <div className={card}>
         <div className={label}>Total Gross</div>
-        <div className={value}>{formatCurrency(kpisToShow.totalGross)}</div>
+        <div className={value}>{formatCompactCurrency(kpisToShow.totalGross)}</div>
       </div>
 
       <div className={card}>
         <div className={label}>Total Promo</div>
-        <div className={value}>{formatCurrency(kpisToShow.totalPromo)}</div>
+        <div className={value}>{formatCompactCurrency(kpisToShow.totalPromo)}</div>
       </div>
 
       <div className={card}>
         <div className={label}>Total Nett</div>
-        <div className={value}>{formatCurrency(kpisToShow.totalNett)}</div>
+        <div className={value}>{formatCompactCurrency(kpisToShow.totalNett)}</div>
       </div>
 
       <div className={card}>
         <div className={label}>Avg Order Value</div>
-        <div className={value}>{formatCurrency(kpisToShow.averageOrderValue)}</div>
+        <div className={value}>{formatCompactCurrency(kpisToShow.averageOrderValue)}</div>
       </div>
 
       {activeView === 'monthly' && (
@@ -79,7 +79,7 @@ export const SummaryCards: React.FC = () => {
 
       <div className={card}>
         <div className={label}>Avg Discount</div>
-        <div className={value}>{formatCurrency(kpisToShow.averageDiscountPerTransaction)}</div>
+        <div className={value}>{formatCompactCurrency(kpisToShow.averageDiscountPerTransaction)}</div>
       </div>
 
       <div className={card}>
