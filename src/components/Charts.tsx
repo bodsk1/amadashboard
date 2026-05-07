@@ -35,7 +35,7 @@ function renderMomLabels(
     .attr('x', d => x(d.month)!)
     .attr('y', yPos)
     .attr('text-anchor', 'middle')
-    .attr('fill', (d, i) => i === 0 ? '#6b7fa3' : (d.momGrowth >= 0 ? '#4ade80' : '#f87171'))
+    .attr('fill', (d, i) => i === 0 ? '#d97706' : (d.momGrowth >= 0 ? '#4ade80' : '#f87171'))
     .attr('font-size', '11px')
     .attr('font-weight', 'bold')
     .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
@@ -45,7 +45,7 @@ const chartContainerStyle: React.CSSProperties = {
   background: '#0d1630',
   borderRadius: '8px',
   padding: '24px',
-  color: '#e2e8f0',
+  color: '#fde047',
   boxShadow: '0 2px 16px rgba(0,0,0,0.3)',
   border: '1px solid #243056',
   marginBottom: '16px',
@@ -55,7 +55,7 @@ const titleStyle: React.CSSProperties = {
   fontSize: '13px',
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
-  color: '#8899bb',
+  color: '#f59e0b',
   marginBottom: '16px',
   fontWeight: 600,
   fontFamily: "'Alliance No. 2', sans-serif",
@@ -64,7 +64,7 @@ const titleStyle: React.CSSProperties = {
 const tooltipStyle: React.CSSProperties = {
   position: 'absolute',
   background: '#1a2444',
-  color: '#e2e8f0',
+  color: '#fde047',
   padding: '10px 14px',
   borderRadius: '6px',
   fontSize: '12px',
@@ -153,7 +153,7 @@ const RevenueTrendChart: React.FC = () => {
       .call(d3.axisBottom(x))
       .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#8899bb')
+      .attr('fill', '#f59e0b')
       .attr('font-size', '11px')
       .attr('text-anchor', 'end')
       .attr('transform', 'rotate(-45)')
@@ -165,14 +165,14 @@ const RevenueTrendChart: React.FC = () => {
       .call(d3.axisLeft(y).ticks(5).tickFormat(d => formatCompactCurrency(d as number)))
       .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#8899bb')
+      .attr('fill', '#f59e0b')
       .attr('font-size', '10px');
 
     const legend = svg.append('g').attr('transform', `translate(${width - 70}, 20)`);
     Object.entries(TREND_LINE_COLORS).forEach(([key, color], i) => {
       legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', color);
       legend.append('text').attr('x', 18).attr('y', i * 20 + 10).text(key.charAt(0).toUpperCase() + key.slice(1))
-        .attr('fill', '#e2e8f0').attr('font-size', '11px');
+        .attr('fill', '#fde047').attr('font-size', '11px');
     });
   }, [months, kpis]);
 
@@ -272,7 +272,7 @@ const OrderTrendChart: React.FC = () => {
       .call(d3.axisBottom(x))
       .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#8899bb')
+      .attr('fill', '#f59e0b')
       .attr('font-size', '12px');
 
     svg.append('g')
@@ -280,7 +280,7 @@ const OrderTrendChart: React.FC = () => {
       .call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
       .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#8899bb')
+      .attr('fill', '#f59e0b')
       .attr('font-size', '12px');
   }, [months, kpis]);
 
@@ -391,7 +391,7 @@ const PaymentChart: React.FC = () => {
         .attr('fill', colors(d.label)).attr('rx', 2);
       legendGroup.append('text')
         .attr('x', 17).attr('y', i * rowH + 9)
-        .attr('fill', '#e2e8f0').attr('font-size', '11px')
+        .attr('fill', '#fde047').attr('font-size', '11px')
         .text(`${d.label}: ${formatNumber(d.value)} (${pct}%)`);
     });
   }, [activeView, selectedMonth, kpis, overallKpis]);
@@ -495,11 +495,11 @@ const ProfileChart: React.FC = () => {
         .attr('fill', colors[d.label] || '#888').attr('rx', 3);
       legendGroup.append('text')
         .attr('x', 22).attr('y', i * 52 + 11)
-        .attr('fill', '#e2e8f0').attr('font-size', '13px').attr('font-weight', '600')
+        .attr('fill', '#fde047').attr('font-size', '13px').attr('font-weight', '600')
         .text(d.label);
       legendGroup.append('text')
         .attr('x', 22).attr('y', i * 52 + 28)
-        .attr('fill', '#8899bb').attr('font-size', '11px')
+        .attr('fill', '#f59e0b').attr('font-size', '11px')
         .text(`${formatNumber(d.value)} orders (${pct}%)`);
     });
   }, [activeView, selectedMonth, kpis, overallKpis]);
@@ -584,14 +584,14 @@ const ServiceChart: React.FC = () => {
       .attr('x', d => x(d.label)! + x.bandwidth() / 2)
       .attr('y', d => y(d.value) - 5)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#94a3b8')
+      .attr('fill', '#d97706')
       .attr('font-size', '10px')
       .attr('font-weight', '600')
       .text(d => formatCompactCurrency(d.value));
 
     svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
       .attr('color', '#243056')
-      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '12px');
+      .selectAll('text').attr('fill', '#f59e0b').attr('font-size', '12px');
 
     // 4 evenly log-spaced ticks — avoids the dense subdivision overlap
     const logMin = Math.log10(minVal * 0.5);
@@ -601,7 +601,7 @@ const ServiceChart: React.FC = () => {
     svg.append('g').attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(y).tickValues(yTicks).tickFormat(d => formatCompactCurrency(d as number)))
       .attr('color', '#243056')
-      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '11px');
+      .selectAll('text').attr('fill', '#f59e0b').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
@@ -685,14 +685,14 @@ const OrdersByServiceChart: React.FC = () => {
       .attr('x', d => x(d.label)! + x.bandwidth() / 2)
       .attr('y', d => y(d.orders) - 5)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#94a3b8')
+      .attr('fill', '#d97706')
       .attr('font-size', '10px')
       .attr('font-weight', '600')
       .text(d => formatCompactNumber(d.orders));
 
     svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
       .attr('color', '#243056')
-      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '12px');
+      .selectAll('text').attr('fill', '#f59e0b').attr('font-size', '12px');
 
     // 4 evenly log-spaced ticks — avoids the dense subdivision overlap
     const logMin = Math.log10(minVal * 0.5);
@@ -702,7 +702,7 @@ const OrdersByServiceChart: React.FC = () => {
     svg.append('g').attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(y).tickValues(yTicks).tickFormat(d => formatCompactNumber(d as number)))
       .attr('color', '#243056')
-      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '11px');
+      .selectAll('text').attr('fill', '#f59e0b').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
@@ -759,7 +759,7 @@ const ConcentrationChart: React.FC = () => {
     padding: '12px',
     textAlign: 'left',
     borderBottom: '2px solid #243056',
-    color: '#8899bb',
+    color: '#f59e0b',
     fontWeight: 600,
     textTransform: 'uppercase',
     fontSize: '11px',
@@ -769,7 +769,7 @@ const ConcentrationChart: React.FC = () => {
   const cellStyle: React.CSSProperties = {
     padding: '12px',
     borderBottom: '1px solid #1a2444',
-    color: '#e2e8f0',
+    color: '#fde047',
   };
 
   const rankCellStyle: React.CSSProperties = {
@@ -882,7 +882,7 @@ const ItemCategoryChart: React.FC = () => {
       svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
         .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#8899bb')
+        .attr('fill', '#f59e0b')
         .attr('font-size', '12px')
         .attr('text-anchor', 'start')
         .attr('transform', 'rotate(45)')
@@ -891,7 +891,7 @@ const ItemCategoryChart: React.FC = () => {
       svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
         .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#8899bb')
+        .attr('fill', '#f59e0b')
         .attr('font-size', '12px');
     } else {
       // For overall view, show line chart with top 5 categories over time
@@ -979,7 +979,7 @@ const ItemCategoryChart: React.FC = () => {
         .call(d3.axisBottom(x))
         .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#8899bb')
+        .attr('fill', '#f59e0b')
         .attr('font-size', '12px');
 
       svg.append('g')
@@ -987,7 +987,7 @@ const ItemCategoryChart: React.FC = () => {
         .call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
         .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#8899bb')
+        .attr('fill', '#f59e0b')
         .attr('font-size', '12px');
 
       // Add legend
@@ -1003,7 +1003,7 @@ const ItemCategoryChart: React.FC = () => {
           .attr('x', 18)
           .attr('y', i * 20 + 10)
           .text(cat.length > 15 ? cat.substring(0, 15) + '...' : cat)
-          .attr('fill', '#e2e8f0')
+          .attr('fill', '#fde047')
           .attr('font-size', '11px');
       });
     }

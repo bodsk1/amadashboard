@@ -25,8 +25,8 @@ export const SummaryCards: React.FC = () => {
   }
 
   const card = 'bg-navy-800 rounded-lg p-5 border border-navy-600 shadow-sm flex-1 min-w-[180px]';
-  const label = 'text-[11px] uppercase tracking-wide text-slate-400 font-semibold mb-2 font-alliance';
-  const value = 'text-2xl font-semibold text-white';
+  const label = 'text-[11px] uppercase tracking-wide text-yellow-600 font-semibold mb-2 font-alliance';
+  const value = 'text-2xl font-semibold text-yellow-300';
 
   return (
     <div className="flex flex-wrap gap-4 mb-6">
