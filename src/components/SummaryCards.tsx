@@ -24,9 +24,9 @@ export const SummaryCards: React.FC = () => {
     }
   }
 
-  const card = 'bg-gray-100 rounded-lg p-5 border border-gray-200 shadow-sm flex-1 min-w-[180px]';
-  const label = 'text-[11px] uppercase tracking-wide text-gray-500 font-semibold mb-2 font-alliance';
-  const value = 'text-2xl font-semibold text-black';
+  const card = 'bg-navy-800 rounded-lg p-5 border border-navy-600 shadow-sm flex-1 min-w-[180px]';
+  const label = 'text-[11px] uppercase tracking-wide text-slate-400 font-semibold mb-2 font-alliance';
+  const value = 'text-2xl font-semibold text-white';
 
   return (
     <div className="flex flex-wrap gap-4 mb-6">
@@ -70,7 +70,7 @@ export const SummaryCards: React.FC = () => {
         </div>
       )}
 
-      <div className={`${card} ${kpisToShow.promoToRevenueRatio > 27 ? 'border-l-4 border-l-red-400' : 'border-l-4 border-l-green-400'}`}>
+      <div className={`${card} ${kpisToShow.promoToRevenueRatio > 27 ? 'border-l-[3px] border-l-red-400' : 'border-l-[3px] border-l-green-400'}`}>
         <div className={label}>Promo-to-Revenue</div>
         <div className={`${value} ${kpisToShow.promoToRevenueRatio > 27 ? 'text-red-400' : 'text-green-500'}`}>
           {kpisToShow.promoToRevenueRatio.toFixed(1)}%

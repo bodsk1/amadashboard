@@ -35,19 +35,19 @@ function renderMomLabels(
     .attr('x', d => x(d.month)!)
     .attr('y', yPos)
     .attr('text-anchor', 'middle')
-    .attr('fill', (d, i) => i === 0 ? '#999999' : (d.momGrowth >= 0 ? '#16a34a' : '#dc2626'))
+    .attr('fill', (d, i) => i === 0 ? '#6b7fa3' : (d.momGrowth >= 0 ? '#4ade80' : '#f87171'))
     .attr('font-size', '11px')
     .attr('font-weight', 'bold')
     .text((d, i) => i === 0 ? 'BASE' : `${d.momGrowth >= 0 ? '+' : ''}${d.momGrowth.toFixed(1)}%`);
 }
 
 const chartContainerStyle: React.CSSProperties = {
-  background: '#f5f5f5',
+  background: '#0d1630',
   borderRadius: '8px',
   padding: '24px',
-  color: '#000000',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-  border: '1px solid #e0e0e0',
+  color: '#e2e8f0',
+  boxShadow: '0 2px 16px rgba(0,0,0,0.3)',
+  border: '1px solid #243056',
   marginBottom: '16px',
 };
 
@@ -55,7 +55,7 @@ const titleStyle: React.CSSProperties = {
   fontSize: '13px',
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
-  color: '#666666',
+  color: '#8899bb',
   marginBottom: '16px',
   fontWeight: 600,
   fontFamily: "'Alliance No. 2', sans-serif",
@@ -63,15 +63,15 @@ const titleStyle: React.CSSProperties = {
 
 const tooltipStyle: React.CSSProperties = {
   position: 'absolute',
-  background: '#ffffff',
-  color: '#000000',
+  background: '#1a2444',
+  color: '#e2e8f0',
   padding: '10px 14px',
   borderRadius: '6px',
   fontSize: '12px',
   pointerEvents: 'none',
   zIndex: 1000,
-  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-  border: '1px solid #e0e0e0',
+  boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
+  border: '1px solid #243056',
 };
 
 const RevenueTrendChart: React.FC = () => {
@@ -151,9 +151,9 @@ const RevenueTrendChart: React.FC = () => {
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x))
-      .attr('color', '#cccccc')
+      .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#666666')
+      .attr('fill', '#8899bb')
       .attr('font-size', '11px')
       .attr('text-anchor', 'end')
       .attr('transform', 'rotate(-45)')
@@ -163,16 +163,16 @@ const RevenueTrendChart: React.FC = () => {
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(y).ticks(5).tickFormat(d => formatCompactCurrency(d as number)))
-      .attr('color', '#cccccc')
+      .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#666666')
+      .attr('fill', '#8899bb')
       .attr('font-size', '10px');
 
     const legend = svg.append('g').attr('transform', `translate(${width - 70}, 20)`);
     Object.entries(TREND_LINE_COLORS).forEach(([key, color], i) => {
       legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', color);
       legend.append('text').attr('x', 18).attr('y', i * 20 + 10).text(key.charAt(0).toUpperCase() + key.slice(1))
-        .attr('fill', '#000').attr('font-size', '11px');
+        .attr('fill', '#e2e8f0').attr('font-size', '11px');
     });
   }, [months, kpis]);
 
@@ -270,17 +270,17 @@ const OrderTrendChart: React.FC = () => {
     svg.append('g')
       .attr('transform', `translate(0,${height - margin.bottom})`)
       .call(d3.axisBottom(x))
-      .attr('color', '#cccccc')
+      .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#666666')
+      .attr('fill', '#8899bb')
       .attr('font-size', '12px');
-      
+
     svg.append('g')
       .attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
-      .attr('color', '#cccccc')
+      .attr('color', '#243056')
       .selectAll('text')
-      .attr('fill', '#666666')
+      .attr('fill', '#8899bb')
       .attr('font-size', '12px');
   }, [months, kpis]);
 
@@ -345,7 +345,7 @@ const PaymentChart: React.FC = () => {
       .append('path')
       .attr('d', arc as any)
       .attr('fill', d => colors(d.data.label))
-      .attr('stroke', '#ffffff')
+      .attr('stroke', '#0d1630')
       .attr('stroke-width', 2)
       .attr('cursor', 'pointer')
       .on('mouseenter', function(event, d) {
@@ -391,7 +391,7 @@ const PaymentChart: React.FC = () => {
         .attr('fill', colors(d.label)).attr('rx', 2);
       legendGroup.append('text')
         .attr('x', 17).attr('y', i * rowH + 9)
-        .attr('fill', '#000').attr('font-size', '11px')
+        .attr('fill', '#e2e8f0').attr('font-size', '11px')
         .text(`${d.label}: ${formatNumber(d.value)} (${pct}%)`);
     });
   }, [activeView, selectedMonth, kpis, overallKpis]);
@@ -453,7 +453,7 @@ const ProfileChart: React.FC = () => {
       .append('path')
       .attr('d', arc as any)
       .attr('fill', d => colors[d.data.label] || '#888')
-      .attr('stroke', '#ffffff')
+      .attr('stroke', '#0d1630')
       .attr('stroke-width', 2)
       .attr('cursor', 'pointer')
       .on('mouseenter', function(event, d) {
@@ -495,11 +495,11 @@ const ProfileChart: React.FC = () => {
         .attr('fill', colors[d.label] || '#888').attr('rx', 3);
       legendGroup.append('text')
         .attr('x', 22).attr('y', i * 52 + 11)
-        .attr('fill', '#000').attr('font-size', '13px').attr('font-weight', '600')
+        .attr('fill', '#e2e8f0').attr('font-size', '13px').attr('font-weight', '600')
         .text(d.label);
       legendGroup.append('text')
         .attr('x', 22).attr('y', i * 52 + 28)
-        .attr('fill', '#666').attr('font-size', '11px')
+        .attr('fill', '#8899bb').attr('font-size', '11px')
         .text(`${formatNumber(d.value)} orders (${pct}%)`);
     });
   }, [activeView, selectedMonth, kpis, overallKpis]);
@@ -584,14 +584,14 @@ const ServiceChart: React.FC = () => {
       .attr('x', d => x(d.label)! + x.bandwidth() / 2)
       .attr('y', d => y(d.value) - 5)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#333')
+      .attr('fill', '#94a3b8')
       .attr('font-size', '10px')
       .attr('font-weight', '600')
       .text(d => formatCompactCurrency(d.value));
 
     svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
-      .attr('color', '#666666')
-      .selectAll('text').attr('fill', '#999999').attr('font-size', '12px');
+      .attr('color', '#243056')
+      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '12px');
 
     // 4 evenly log-spaced ticks — avoids the dense subdivision overlap
     const logMin = Math.log10(minVal * 0.5);
@@ -600,8 +600,8 @@ const ServiceChart: React.FC = () => {
 
     svg.append('g').attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(y).tickValues(yTicks).tickFormat(d => formatCompactCurrency(d as number)))
-      .attr('color', '#666666')
-      .selectAll('text').attr('fill', '#999999').attr('font-size', '11px');
+      .attr('color', '#243056')
+      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
@@ -685,14 +685,14 @@ const OrdersByServiceChart: React.FC = () => {
       .attr('x', d => x(d.label)! + x.bandwidth() / 2)
       .attr('y', d => y(d.orders) - 5)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#333')
+      .attr('fill', '#94a3b8')
       .attr('font-size', '10px')
       .attr('font-weight', '600')
       .text(d => formatCompactNumber(d.orders));
 
     svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
-      .attr('color', '#666666')
-      .selectAll('text').attr('fill', '#999999').attr('font-size', '12px');
+      .attr('color', '#243056')
+      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '12px');
 
     // 4 evenly log-spaced ticks — avoids the dense subdivision overlap
     const logMin = Math.log10(minVal * 0.5);
@@ -701,8 +701,8 @@ const OrdersByServiceChart: React.FC = () => {
 
     svg.append('g').attr('transform', `translate(${margin.left},0)`)
       .call(d3.axisLeft(y).tickValues(yTicks).tickFormat(d => formatCompactNumber(d as number)))
-      .attr('color', '#666666')
-      .selectAll('text').attr('fill', '#999999').attr('font-size', '11px');
+      .attr('color', '#243056')
+      .selectAll('text').attr('fill', '#8899bb').attr('font-size', '11px');
   }, [activeView, selectedMonth, kpis, overallKpis]);
 
   return (
@@ -758,8 +758,8 @@ const ConcentrationChart: React.FC = () => {
   const headerCellStyle: React.CSSProperties = {
     padding: '12px',
     textAlign: 'left',
-    borderBottom: '2px solid #e0e0e0',
-    color: '#666666',
+    borderBottom: '2px solid #243056',
+    color: '#8899bb',
     fontWeight: 600,
     textTransform: 'uppercase',
     fontSize: '11px',
@@ -768,8 +768,8 @@ const ConcentrationChart: React.FC = () => {
 
   const cellStyle: React.CSSProperties = {
     padding: '12px',
-    borderBottom: '1px solid #e0e0e0',
-    color: '#000000',
+    borderBottom: '1px solid #1a2444',
+    color: '#e2e8f0',
   };
 
   const rankCellStyle: React.CSSProperties = {
@@ -785,8 +785,8 @@ const ConcentrationChart: React.FC = () => {
     borderRadius: '4px',
     fontSize: '11px',
     fontWeight: 600,
-    backgroundColor: profileType === 'AAPRO' ? '#e0f2fe' : '#f0fdf4',
-    color: profileType === 'AAPRO' ? '#0369a1' : '#166534',
+    backgroundColor: profileType === 'AAPRO' ? '#1a3a5c' : '#1a3a2c',
+    color: profileType === 'AAPRO' ? '#60a5fa' : '#4ade80',
   });
 
   return (
@@ -880,18 +880,18 @@ const ItemCategoryChart: React.FC = () => {
         });
       
       svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
-        .attr('color', '#cccccc')
+        .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#666666')
+        .attr('fill', '#8899bb')
         .attr('font-size', '12px')
         .attr('text-anchor', 'start')
         .attr('transform', 'rotate(45)')
         .attr('dx', '8px')
         .attr('dy', '4px');
       svg.append('g').attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
-        .attr('color', '#cccccc')
+        .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#666666')
+        .attr('fill', '#8899bb')
         .attr('font-size', '12px');
     } else {
       // For overall view, show line chart with top 5 categories over time
@@ -977,19 +977,19 @@ const ItemCategoryChart: React.FC = () => {
       svg.append('g')
         .attr('transform', `translate(0,${height - margin.bottom})`)
         .call(d3.axisBottom(x))
-        .attr('color', '#cccccc')
+        .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#666666')
+        .attr('fill', '#8899bb')
         .attr('font-size', '12px');
-        
+
       svg.append('g')
         .attr('transform', `translate(${margin.left},0)`)
         .call(d3.axisLeft(y).tickFormat(d => formatNumber(d as number)))
-        .attr('color', '#cccccc')
+        .attr('color', '#243056')
         .selectAll('text')
-        .attr('fill', '#666666')
+        .attr('fill', '#8899bb')
         .attr('font-size', '12px');
-      
+
       // Add legend
       const legend = svg.append('g').attr('transform', `translate(${width - 110}, 40)`);
       top5Categories.forEach((cat, i) => {
@@ -1003,7 +1003,7 @@ const ItemCategoryChart: React.FC = () => {
           .attr('x', 18)
           .attr('y', i * 20 + 10)
           .text(cat.length > 15 ? cat.substring(0, 15) + '...' : cat)
-          .attr('fill', '#000')
+          .attr('fill', '#e2e8f0')
           .attr('font-size', '11px');
       });
     }

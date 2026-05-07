@@ -47,27 +47,28 @@ const Dashboard: React.FC = () => {
     loadData();
   }, [dispatch]);
 
-  if (loading) return <div className="text-white text-center py-12">Loading...</div>;
-  if (error) return <div className="text-red-400 text-center py-12">Error: {error}</div>;
+  if (loading) return <div className="text-slate-300 text-center py-12 bg-navy-900 min-h-screen">Loading...</div>;
+  if (error) return <div className="text-red-400 text-center py-12 bg-navy-900 min-h-screen">Error: {error}</div>;
 
   const btnBase = 'px-5 py-2.5 rounded-full text-sm font-medium uppercase tracking-wide transition-all duration-200 cursor-pointer';
-  const btnActive = `${btnBase} bg-black text-white border-none`;
-  const btnInactive = `${btnBase} bg-white text-black border border-gray-200 hover:border-gray-400`;
+  const btnActive = `${btnBase} bg-blue-500 text-white border-none`;
+  const btnInactive = `${btnBase} bg-navy-700 text-slate-300 border border-navy-600 hover:border-blue-500 hover:text-white`;
 
   const sectionHeader = (emoji: string, label: string) => (
-    <div className="mt-10 mb-4">
-      <h2 className="text-lg font-semibold text-black uppercase tracking-widest font-alliance">
+    <div className="mt-10 mb-4 border-b border-navy-600 pb-2">
+      <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest font-alliance">
         {emoji} {label}
       </h2>
     </div>
   );
 
   return (
-    <div className="min-h-screen px-5 py-10 relative">
-      <img src="/logo.png" alt="Anteraja" className="absolute top-5 right-5 h-10 w-auto" />
-      <h1 className="text-3xl font-semibold text-black mb-8 tracking-tight font-alliance">
+    <div className="min-h-screen bg-navy-900 px-5 py-10 relative">
+      <img src="/logo.png" alt="Anteraja" className="absolute top-5 right-5 h-10 w-auto opacity-90" />
+      <h1 className="text-3xl font-semibold text-white mb-2 tracking-tight font-alliance">
         Anteraja App Monthly Dashboard
       </h1>
+      <p className="text-slate-400 text-sm mb-8">Performance overview across all channels</p>
 
       {/* View controls */}
       <div className="flex flex-wrap gap-3 mb-8">
@@ -81,8 +82,8 @@ const Dashboard: React.FC = () => {
           <select
             value={selectedMonth || ''}
             onChange={e => dispatch(setSelectedMonth(e.target.value))}
-            className="px-4 py-2.5 pr-8 rounded-full bg-white text-black border border-gray-200 text-sm uppercase tracking-wide cursor-pointer appearance-none font-alliance"
-            style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"8\" viewBox=\"0 0 12 8\"><path fill=\"%23000\" d=\"M1 1l5 5 5-5\"/></svg>')", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
+            className="px-4 py-2.5 pr-8 rounded-full bg-navy-700 text-slate-200 border border-navy-600 text-sm uppercase tracking-wide cursor-pointer appearance-none font-alliance"
+            style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"8\" viewBox=\"0 0 12 8\"><path fill=\"%2394a3b8\" d=\"M1 1l5 5 5-5\"/></svg>')", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
           >
             {months.map((m: string) => <option key={m} value={m}>{getMonthName(m)}</option>)}
           </select>
@@ -123,7 +124,7 @@ const Dashboard: React.FC = () => {
         <ItemCategoryChart />
       </div>
 
-      <footer className="mt-16 pt-10 border-t border-gray-200 text-center text-gray-400 text-xs">
+      <footer className="mt-16 pt-10 border-t border-navy-600 text-center text-slate-500 text-xs">
         <p>Created by Nanda Pratama © 2026</p>
       </footer>
     </div>
