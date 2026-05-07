@@ -40,6 +40,7 @@ interface UIState {
   activeView: 'overall' | 'monthly';
   selectedMonth: string | null;
   selectedProfile: 'all' | 'Retail' | 'AAPRO';
+  theme: 'dark' | 'light';
 }
 
 const initialDataState: DataState = {
@@ -58,6 +59,7 @@ const initialUIState: UIState = {
   activeView: 'overall',
   selectedMonth: null,
   selectedProfile: 'all',
+  theme: 'dark',
 };
 
 const dataSlice = createSlice({
@@ -212,6 +214,9 @@ const uiSlice = createSlice({
     setSelectedProfile: (state, action: PayloadAction<'all' | 'Retail' | 'AAPRO'>) => {
       state.selectedProfile = action.payload;
     },
+    setTheme: (state, action: PayloadAction<'dark' | 'light'>) => {
+      state.theme = action.payload;
+    },
   },
 });
 
@@ -225,7 +230,7 @@ export const store = configureStore({
 
 export const { setOrders, setLoading, setError } = dataSlice.actions;
 export const { computeKPIs } = computedSlice.actions;
-export const { setActiveView, setSelectedMonth, setSelectedProfile } = uiSlice.actions;
+export const { setActiveView, setSelectedMonth, setSelectedProfile, setTheme } = uiSlice.actions;
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

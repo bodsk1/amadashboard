@@ -4,7 +4,7 @@ import { RootState } from '../store';
 import { formatCompactCurrency, formatNumber, formatPercent } from '../utils/formatters';
 
 export const SummaryCards: React.FC = () => {
-  const { activeView, selectedMonth } = useSelector((state: RootState) => state.ui);
+  const { activeView, selectedMonth, theme } = useSelector((state: RootState) => state.ui);
   const { kpis, overallKpis } = useSelector((state: RootState) => state.computed);
   const { months } = useSelector((state: RootState) => state.data);
 
@@ -24,9 +24,16 @@ export const SummaryCards: React.FC = () => {
     }
   }
 
-  const card = 'bg-navy-800 rounded-lg p-5 border border-navy-600 shadow-sm flex-1 min-w-[180px]';
-  const label = 'text-[11px] uppercase tracking-wide text-gray-400 font-semibold mb-2 font-alliance';
-  const value = 'text-2xl font-semibold text-white';
+  const isDark = theme === 'dark';
+  const card = isDark
+    ? 'bg-navy-800 rounded-lg p-5 border border-navy-600 shadow-sm flex-1 min-w-[180px]'
+    : 'bg-gray-100 rounded-lg p-5 border border-gray-200 shadow-sm flex-1 min-w-[180px]';
+  const label = isDark
+    ? 'text-[11px] uppercase tracking-wide text-gray-400 font-semibold mb-2 font-alliance'
+    : 'text-[11px] uppercase tracking-wide text-gray-500 font-semibold mb-2 font-alliance';
+  const value = isDark
+    ? 'text-2xl font-semibold text-white'
+    : 'text-2xl font-semibold text-black';
 
   return (
     <div className="flex flex-wrap gap-4 mb-6">

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { store, setOrders, setLoading, setError, computeKPIs, setActiveView, setSelectedMonth } from '../store';
+import { store, setOrders, setLoading, setError, computeKPIs, setActiveView, setSelectedMonth, setTheme } from '../store';
 import { SummaryCards } from './SummaryCards';
 import { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart } from './Charts';
 import { getMonthName } from '../utils/formatters';
@@ -8,7 +8,17 @@ import { getMonthName } from '../utils/formatters';
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
   const { months, loading, error } = useSelector((state: any) => state.data);
-  const { activeView, selectedMonth } = useSelector((state: any) => state.ui);
+  const { activeView, selectedMonth, theme } = useSelector((state: any) => state.ui);
+  const isDark = theme === 'dark';
+
+  useEffect(() => {
+    document.body.style.backgroundColor = isDark ? '#0a0f1e' : '#ffffff';
+    document.body.style.color = isDark ? '#ffffff' : '#000000';
+    document.documentElement.style.setProperty(
+      '--grid-color',
+      isDark ? 'rgba(200, 200, 200, 0.15)' : 'rgba(200, 200, 200, 0.4)'
+    );
+  }, [isDark]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -47,16 +57,20 @@ const Dashboard: React.FC = () => {
     loadData();
   }, [dispatch]);
 
-  if (loading) return <div className="text-white text-center py-12 bg-navy-900 min-h-screen">Loading...</div>;
-  if (error) return <div className="text-red-400 text-center py-12 bg-navy-900 min-h-screen">Error: {error}</div>;
+  if (loading) return <div className="text-white text-center py-12">Loading...</div>;
+  if (error) return <div className="text-red-400 text-center py-12">Error: {error}</div>;
 
   const btnBase = 'px-5 py-2.5 rounded-full text-sm font-medium uppercase tracking-wide transition-all duration-200 cursor-pointer';
-  const btnActive = `${btnBase} bg-yellow-400 text-navy-900 border-none font-bold`;
-  const btnInactive = `${btnBase} bg-navy-700 text-white border border-navy-600 hover:border-yellow-400 hover:text-yellow-300`;
+  const btnActive = isDark
+    ? `${btnBase} bg-yellow-400 text-navy-900 border-none font-bold`
+    : `${btnBase} bg-black text-white border-none`;
+  const btnInactive = isDark
+    ? `${btnBase} bg-navy-700 text-white border border-navy-600 hover:border-yellow-400 hover:text-yellow-300`
+    : `${btnBase} bg-white text-black border border-gray-200 hover:border-gray-400`;
 
   const sectionHeader = (emoji: string, label: string) => (
-    <div className="mt-10 mb-4 border-b border-navy-600 pb-2">
-      <h2 className="text-sm font-semibold text-yellow-600 uppercase tracking-widest font-alliance">
+    <div className={`mt-10 mb-4 pb-2 border-b ${isDark ? 'border-navy-600' : 'border-gray-200'}`}>
+      <h2 className={`text-sm font-semibold uppercase tracking-widest font-alliance ${isDark ? 'text-yellow-600' : 'text-black'}`}>
         {emoji} {label}
       </h2>
     </div>
@@ -64,11 +78,25 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen px-5 py-10 relative">
-      <img src="/logo.png" alt="Anteraja" className="absolute top-5 right-5 h-10 w-auto opacity-90" />
-      <h1 className="text-3xl font-semibold text-yellow-600 mb-2 tracking-tight font-alliance">
+
+      {/* Top-right: theme toggle + logo */}
+      <div className="absolute top-5 right-5 flex items-center gap-4">
+        <button
+          onClick={() => dispatch(setTheme(isDark ? 'light' : 'dark'))}
+          title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none ${isDark ? 'bg-yellow-500' : 'bg-gray-300'}`}
+        >
+          <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform duration-300 ${isDark ? 'translate-x-6' : 'translate-x-1'}`} />
+        </button>
+        <img src="/logo.png" alt="Anteraja" className="h-10 w-auto opacity-90" />
+      </div>
+
+      <h1 className={`text-3xl font-semibold mb-2 tracking-tight font-alliance ${isDark ? 'text-yellow-600' : 'text-black'}`}>
         Anteraja App Monthly Dashboard
       </h1>
-      <p className="text-gray-400 text-sm mb-8">Performance overview across all channels</p>
+      <p className={`text-sm mb-8 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+        Performance overview across all channels
+      </p>
 
       {/* View controls */}
       <div className="flex flex-wrap gap-3 mb-8">
@@ -82,8 +110,16 @@ const Dashboard: React.FC = () => {
           <select
             value={selectedMonth || ''}
             onChange={e => dispatch(setSelectedMonth(e.target.value))}
-            className="px-4 py-2.5 pr-8 rounded-full bg-navy-700 text-white border border-navy-600 text-sm uppercase tracking-wide cursor-pointer appearance-none font-alliance"
-            style={{ backgroundImage: "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"8\" viewBox=\"0 0 12 8\"><path fill=\"%23ffffff\" d=\"M1 1l5 5 5-5\"/></svg>')", backgroundRepeat: 'no-repeat', backgroundPosition: 'right 10px center' }}
+            className={`px-4 py-2.5 pr-8 rounded-full text-sm uppercase tracking-wide cursor-pointer appearance-none font-alliance border ${
+              isDark
+                ? 'bg-navy-700 text-white border-navy-600'
+                : 'bg-white text-black border-gray-200'
+            }`}
+            style={{
+              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path fill="${isDark ? '%23ffffff' : '%23000000'}" d="M1 1l5 5 5-5"/></svg>')`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 10px center',
+            }}
           >
             {months.map((m: string) => <option key={m} value={m}>{getMonthName(m)}</option>)}
           </select>
@@ -124,7 +160,7 @@ const Dashboard: React.FC = () => {
         <ItemCategoryChart />
       </div>
 
-      <footer className="mt-16 pt-10 border-t border-navy-600 text-center text-gray-500 text-xs">
+      <footer className={`mt-16 pt-10 border-t text-center text-xs ${isDark ? 'border-navy-600 text-gray-500' : 'border-gray-200 text-gray-400'}`}>
         <p>Created by Nanda Pratama © 2026</p>
       </footer>
     </div>
