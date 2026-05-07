@@ -63,7 +63,7 @@ const Dashboard: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-navy-900 px-5 py-10 relative">
+    <div className="min-h-screen px-5 py-10 relative">
       <img src="/logo.png" alt="Anteraja" className="absolute top-5 right-5 h-10 w-auto opacity-90" />
       <h1 className="text-3xl font-semibold text-yellow-300 mb-2 tracking-tight font-alliance">
         Anteraja App Monthly Dashboard
