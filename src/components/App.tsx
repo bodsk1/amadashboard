@@ -13,15 +13,6 @@ const Dashboard: React.FC = () => {
   const { activeView, selectedMonth, theme } = useSelector((state: any) => state.ui);
   const isDark = theme === 'dark';
 
-  const signInPage = (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
-      <SignIn appearance={{ variables: { colorPrimary: '#ca8a04', colorBackground: '#0d1630', colorText: '#ffffff', colorInputBackground: '#1a2444', colorInputText: '#ffffff', colorNeutral: '#8899bb' } }} />
-    </div>
-  );
-
-  if (!isLoaded) return null;
-  if (!isSignedIn) return signInPage;
-
   useEffect(() => {
     document.body.style.backgroundColor = isDark ? '#0a0f1e' : '#ffffff';
     document.body.style.color = isDark ? '#ffffff' : '#000000';
@@ -32,6 +23,7 @@ const Dashboard: React.FC = () => {
   }, [isDark]);
 
   useEffect(() => {
+    if (!isSignedIn) return;
     const loadData = async () => {
       dispatch(setLoading(true));
       try {
@@ -66,7 +58,16 @@ const Dashboard: React.FC = () => {
     };
 
     loadData();
-  }, [dispatch]);
+  }, [dispatch, isSignedIn]);
+
+  const signInPage = (
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
+      <SignIn appearance={{ variables: { colorPrimary: '#ca8a04', colorBackground: '#0d1630', colorText: '#ffffff', colorInputBackground: '#1a2444', colorInputText: '#ffffff', colorNeutral: '#8899bb' } }} />
+    </div>
+  );
+
+  if (!isLoaded) return null;
+  if (!isSignedIn) return signInPage;
 
   if (loading) return <div className="text-white text-center py-12">Loading...</div>;
   if (error) return <div className="text-red-400 text-center py-12">Error: {error}</div>;
