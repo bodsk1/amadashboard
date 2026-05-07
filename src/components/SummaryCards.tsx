@@ -69,10 +69,11 @@ export const SummaryCards: React.FC = () => {
       </div>
 
       {activeView === 'monthly' && (
-        <div className={card}>
+        <div className={`${card} ${kpisToShow.momGrowth >= 0 ? 'border-l-[3px] border-l-green-400' : 'border-l-[3px] border-l-red-400'}`}>
           <div className={label}>Revenue MoM Growth</div>
-          <div className={`${value} ${kpisToShow.momGrowth >= 0 ? 'text-green-500' : 'text-red-400'}`}>
-            {formatPercent(kpisToShow.momGrowth)}
+          <div className={`${value} flex items-center gap-1 ${kpisToShow.momGrowth >= 0 ? 'text-green-500' : 'text-red-400'}`}>
+            <span>{kpisToShow.momGrowth >= 0 ? '↑' : '↓'}</span>
+            <span>{formatPercent(kpisToShow.momGrowth)}</span>
           </div>
         </div>
       )}
