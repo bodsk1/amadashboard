@@ -55,7 +55,7 @@ const titleStyle: React.CSSProperties = {
   fontSize: '13px',
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
-  color: '#f59e0b',
+  color: '#ca8a04',
   marginBottom: '16px',
   fontWeight: 600,
   fontFamily: "'Alliance No. 2', sans-serif",
