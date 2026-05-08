@@ -56,4 +56,5 @@ export interface KPIMetrics {
   dailyActiveUsers: number;
   ordersByItemCategory: Record<string, number>;
   revenueByItemCategory: Record<string, number>;
+  ordersByPromoCode: Record<string, number>;
 }

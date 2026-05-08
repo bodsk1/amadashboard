@@ -22,6 +22,7 @@ const initialKPIMetrics: KPIMetrics = {
   dailyActiveUsers: 0,
   ordersByItemCategory: {},
   revenueByItemCategory: {},
+  ordersByPromoCode: {},
 };
 
 interface DataState {
@@ -121,6 +122,7 @@ const computedSlice = createSlice({
             dailyActiveUsers: 0,
             ordersByItemCategory: {},
             revenueByItemCategory: {},
+            ordersByPromoCode: {},
           };
           
           // Aggregate across all months
@@ -150,6 +152,11 @@ const computedSlice = createSlice({
             Object.keys(kpi.ordersByItemCategory).forEach(category => {
               overallKpis.ordersByItemCategory[category] = (overallKpis.ordersByItemCategory[category] || 0) + kpi.ordersByItemCategory[category];
               overallKpis.revenueByItemCategory[category] = (overallKpis.revenueByItemCategory[category] || 0) + kpi.revenueByItemCategory[category];
+            });
+
+            // Promo codes
+            Object.keys(kpi.ordersByPromoCode || {}).forEach(promo => {
+              overallKpis.ordersByPromoCode[promo] = (overallKpis.ordersByPromoCode[promo] || 0) + kpi.ordersByPromoCode[promo];
             });
           });
           

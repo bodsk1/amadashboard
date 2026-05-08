@@ -135,7 +135,13 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     ordersByItemCategory[o.itemCategory] = (ordersByItemCategory[o.itemCategory] || 0) + 1;
     revenueByItemCategory[o.itemCategory] = (revenueByItemCategory[o.itemCategory] || 0) + o.nettAmount;
   });
-  
+
+  const ordersByPromoCode: Record<string, number> = {};
+  orders.forEach(o => {
+    const promo = (o as any).promoCode || 'No Promo';
+    ordersByPromoCode[promo] = (ordersByPromoCode[promo] || 0) + 1;
+  });
+
   return {
     totalTransactions,
     totalGross,
@@ -156,5 +162,6 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     dailyActiveUsers: dailyCustomers,
     ordersByItemCategory,
     revenueByItemCategory,
+    ordersByPromoCode,
   };
 };

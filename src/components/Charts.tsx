@@ -981,13 +981,6 @@ const ItemCategoryChart: React.FC = () => {
 
       if (months.length === 0) return;
 
-      const cols = 3;
-      const legendRowHeight = 22;
-      const legendRows = Math.ceil(allCategoriesSorted.length / cols);
-      const legendHeight = legendRows * legendRowHeight + 16;
-      const width = 700, height = 380 + legendHeight;
-      const margin = { top: 40, right: 20, bottom: 20 + legendHeight, left: 60 };
-
       const allCategories: Record<string, number> = {};
       months.forEach(m => {
         const monthKpis = kpis[m];
@@ -1003,6 +996,13 @@ const ItemCategoryChart: React.FC = () => {
         .map(([cat]) => cat);
 
       if (allCategoriesSorted.length === 0) return;
+
+      const cols = 3;
+      const legendRowHeight = 22;
+      const legendRows = Math.ceil(allCategoriesSorted.length / cols);
+      const legendHeight = legendRows * legendRowHeight + 16;
+      const width = 700, height = 380 + legendHeight;
+      const margin = { top: 40, right: 20, bottom: 20 + legendHeight, left: 60 };
 
       const lineData = allCategoriesSorted.map(category => ({
         category,
