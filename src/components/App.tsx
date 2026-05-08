@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import { useAuth, SignIn, UserButton } from '@clerk/clerk-react';
 import { store, setOrders, setLoading, setError, computeKPIs, setActiveView, setSelectedMonth, setTheme } from '../store';
 import { SummaryCards } from './SummaryCards';
 import { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart } from './Charts';
@@ -8,7 +7,6 @@ import { getMonthName } from '../utils/formatters';
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
-  const { isSignedIn, isLoaded } = useAuth();
   const { months, loading, error } = useSelector((state: any) => state.data);
   const { activeView, selectedMonth, theme } = useSelector((state: any) => state.ui);
   const isDark = theme === 'dark';
@@ -23,7 +21,6 @@ const Dashboard: React.FC = () => {
   }, [isDark]);
 
   useEffect(() => {
-    if (!isSignedIn) return;
     const loadData = async () => {
       dispatch(setLoading(true));
       try {
@@ -58,16 +55,7 @@ const Dashboard: React.FC = () => {
     };
 
     loadData();
-  }, [dispatch, isSignedIn]);
-
-  const signInPage = (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0f1e' }}>
-      <SignIn appearance={{ variables: { colorPrimary: '#ca8a04', colorBackground: '#0d1630', colorText: '#ffffff', colorInputBackground: '#1a2444', colorInputText: '#ffffff', colorNeutral: '#8899bb' } }} />
-    </div>
-  );
-
-  if (!isLoaded) return null;
-  if (!isSignedIn) return signInPage;
+  }, [dispatch]);
 
   if (loading) return <div className="text-white text-center py-12">Loading...</div>;
   if (error) return <div className="text-red-400 text-center py-12">Error: {error}</div>;
@@ -93,7 +81,6 @@ const Dashboard: React.FC = () => {
 
       {/* Top-right: theme toggle + logo */}
       <div className="absolute top-5 right-5 flex items-center gap-4">
-        <UserButton afterSignOutUrl="/" />
         <button
           onClick={() => dispatch(setTheme(isDark ? 'light' : 'dark'))}
           title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
