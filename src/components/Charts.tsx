@@ -887,14 +887,13 @@ const ItemCategoryChart: React.FC = () => {
         }
       });
 
-      const top5Categories = Object.entries(allCategories)
+      const allCategoriesSorted = Object.entries(allCategories)
         .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
         .map(([cat]) => cat);
 
-      if (top5Categories.length === 0) return;
+      if (allCategoriesSorted.length === 0) return;
 
-      const lineData = top5Categories.map(category => ({
+      const lineData = allCategoriesSorted.map(category => ({
         category,
         values: months.map(m => ({ month: m, orders: kpis[m]?.ordersByItemCategory[category] || 0 }))
       }));
@@ -902,7 +901,7 @@ const ItemCategoryChart: React.FC = () => {
       const x = d3.scalePoint<string>().domain(months).range([margin.left, width - margin.right]).padding(0.5);
       const maxY = d3.max(lineData, d => d3.max(d.values, v => v.orders)) || 0;
       const y = d3.scaleLinear().domain([0, maxY * 1.1]).nice().range([height - margin.bottom, margin.top]);
-      const colors = d3.scaleOrdinal(d3.schemeTableau10).domain(top5Categories);
+      const colors = d3.scaleOrdinal(d3.schemeTableau10).domain(allCategoriesSorted);
 
       const line = d3.line<{ month: string; orders: number }>()
         .x(d => x(d.month)!)
@@ -937,7 +936,7 @@ const ItemCategoryChart: React.FC = () => {
         .selectAll('text').attr('fill', c.axisText).attr('font-size', '12px');
 
       const legend = svg.append('g').attr('transform', `translate(${width - 110}, 40)`);
-      top5Categories.forEach((cat, i) => {
+      allCategoriesSorted.forEach((cat, i) => {
         legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', colors(cat) as string);
         legend.append('text').attr('x', 18).attr('y', i * 20 + 10)
           .text(cat.length > 15 ? cat.substring(0, 15) + '...' : cat)
@@ -949,7 +948,7 @@ const ItemCategoryChart: React.FC = () => {
   return (
     <div style={getContainerStyle(theme)}>
       <div style={getTitleStyle(theme)}>
-        {activeView === 'overall' ? 'Top 5 Item Categories - Trend' : 'Item Category Performance'}
+        {activeView === 'overall' ? 'Item Categories - Trend' : 'Item Category Performance'}
       </div>
       <div style={{ position: 'relative' }}>
         <svg ref={svgRef} width="100%" height="400" viewBox="0 0 700 400" style={{ overflow: 'visible' }} />
