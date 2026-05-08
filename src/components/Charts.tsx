@@ -874,8 +874,12 @@ const ItemCategoryChart: React.FC = () => {
 
       if (months.length === 0) return;
 
-      const width = 700, height = 400;
-      const margin = { top: 40, right: 120, bottom: 60, left: 60 };
+      const cols = 3;
+      const legendRowHeight = 22;
+      const legendRows = Math.ceil(allCategoriesSorted.length / cols);
+      const legendHeight = legendRows * legendRowHeight + 16;
+      const width = 700, height = 380 + legendHeight;
+      const margin = { top: 40, right: 20, bottom: 20 + legendHeight, left: 60 };
 
       const allCategories: Record<string, number> = {};
       months.forEach(m => {
@@ -908,23 +912,55 @@ const ItemCategoryChart: React.FC = () => {
         .y(d => y(d.orders))
         .curve(d3.curveMonotoneX);
 
+      const slugify = (s: string) => s.replace(/[^a-zA-Z0-9]/g, '_');
+
+      const highlight = (cat: string) => {
+        allCategoriesSorted.forEach(c2 => {
+          const faded = c2 !== cat;
+          svg.select(`.line-${slugify(c2)}`).attr('opacity', faded ? 0.1 : 1).attr('stroke-width', faded ? 1.5 : 3);
+          svg.selectAll(`.dot-${slugify(c2)}`).attr('opacity', faded ? 0.1 : 1);
+          svg.select(`.legend-item-${slugify(c2)}`).attr('opacity', faded ? 0.3 : 1);
+        });
+      };
+
+      const resetHighlight = () => {
+        allCategoriesSorted.forEach(c2 => {
+          svg.select(`.line-${slugify(c2)}`).attr('opacity', 1).attr('stroke-width', 2);
+          svg.selectAll(`.dot-${slugify(c2)}`).attr('opacity', 1);
+          svg.select(`.legend-item-${slugify(c2)}`).attr('opacity', 1);
+        });
+      };
+
       lineData.forEach(catData => {
         const color = colors(catData.category) as string;
-        svg.append('path').datum(catData.values).attr('fill', 'none').attr('stroke', color).attr('stroke-width', 2.5).attr('d', line);
-        svg.selectAll(`.dot-${catData.category}`)
+        const slug = slugify(catData.category);
+        svg.append('path')
+          .datum(catData.values)
+          .attr('class', `line-${slug}`)
+          .attr('fill', 'none')
+          .attr('stroke', color)
+          .attr('stroke-width', 2)
+          .attr('d', line)
+          .attr('cursor', 'pointer')
+          .on('mouseenter', () => highlight(catData.category))
+          .on('mouseleave', () => { resetHighlight(); setTooltip(null); });
+
+        svg.selectAll(`.dot-${slug}`)
           .data(catData.values)
           .enter()
           .append('circle')
+          .attr('class', `dot-${slug}`)
           .attr('cx', d => x(d.month)!)
           .attr('cy', d => y(d.orders))
           .attr('r', 4)
           .attr('fill', color)
           .attr('cursor', 'pointer')
           .on('mouseenter', (event, d) => {
+            highlight(catData.category);
             const rect = svgRef.current?.getBoundingClientRect();
             if (rect) setTooltip({ x: event.clientX - rect.left, y: event.clientY - rect.top - 60, content: `${catData.category}\n${d.month}\nOrders: ${formatNumber(d.orders)}` });
           })
-          .on('mouseleave', () => setTooltip(null));
+          .on('mouseleave', () => { resetHighlight(); setTooltip(null); });
       });
 
       svg.append('g').attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x))
@@ -935,11 +971,23 @@ const ItemCategoryChart: React.FC = () => {
         .attr('color', c.axisLine)
         .selectAll('text').attr('fill', c.axisText).attr('font-size', '12px');
 
-      const legend = svg.append('g').attr('transform', `translate(${width - 110}, 40)`);
+      const colWidth = Math.floor(width / cols);
+      const legendY = height - margin.bottom + 36;
       allCategoriesSorted.forEach((cat, i) => {
-        legend.append('rect').attr('x', 0).attr('y', i * 20).attr('width', 12).attr('height', 12).attr('fill', colors(cat) as string);
-        legend.append('text').attr('x', 18).attr('y', i * 20 + 10)
-          .text(cat.length > 15 ? cat.substring(0, 15) + '...' : cat)
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const lx = col * colWidth;
+        const ly = legendY + row * legendRowHeight;
+        const slug = slugify(cat);
+        const g = svg.append('g')
+          .attr('class', `legend-item-${slug}`)
+          .attr('transform', `translate(${lx}, ${ly})`)
+          .attr('cursor', 'pointer')
+          .on('mouseenter', () => highlight(cat))
+          .on('mouseleave', resetHighlight);
+        g.append('rect').attr('width', 12).attr('height', 12).attr('fill', colors(cat) as string);
+        g.append('text').attr('x', 18).attr('y', 10)
+          .text(cat.length > 22 ? cat.substring(0, 22) + '…' : cat)
           .attr('fill', c.legendText).attr('font-size', '11px');
       });
     }
@@ -951,7 +999,7 @@ const ItemCategoryChart: React.FC = () => {
         {activeView === 'overall' ? 'Item Categories - Trend' : 'Item Category Performance'}
       </div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="400" viewBox="0 0 700 400" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" viewBox="0 0 700 700" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...getTooltipStyle(theme), left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
