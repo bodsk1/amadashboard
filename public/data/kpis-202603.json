@@ -125,5 +125,22 @@
     "COLD_FOOD": 5416000,
     "COLD_DRINK": 294100,
     "COLD_OTHERS": 365500
+  },
+  "ordersByPromoCode": {
+    "No Promo": 3972,
+    "ANTERKEBAIKAN": 3634,
+    "AAPROREG": 8758,
+    "AMBILUNTUNGNYA15": 2956,
+    "ANTERAJAHEMAT": 775,
+    "JEMPUTKEBAIKAN": 8470,
+    "PAKETBERAT": 895,
+    "ANTERAJAMUDAH": 1375,
+    "KIRIMFROZEN": 334,
+    "Subscription": 1005,
+    "AAPROSD": 218,
+    "MULAIKIRIM": 16,
+    "C48W5HFN": 12,
+    "UC9BW7MM": 6,
+    "TAYJUMN3": 1
   }
 }

@@ -84,6 +84,12 @@ function processCSV(filePath) {
       return;
     }
     
+    const rawPromo = (row.promo_code || '').trim();
+    let promoCode;
+    if (rawPromo === '') promoCode = 'No Promo';
+    else if (rawPromo.startsWith('SUBS')) promoCode = 'Subscription';
+    else promoCode = rawPromo;
+
     monthlyData[monthKey].push({
       waybill: row.waybill.trim(),
       createOrderTime: parseDate(row.create_order_time).toISOString(),
@@ -94,7 +100,8 @@ function processCSV(filePath) {
       grossAmount: parseFloat(row.gross_amount) || 0,
       promoAmount: parseFloat(row.promo_amount) || 0,
       nettAmount: parseFloat(row.nett_amount) || (parseFloat(row.gross_amount) - parseFloat(row.promo_amount)),
-      itemCategory: row.item_category_code || 'Unknown'
+      itemCategory: row.item_category_code || 'Unknown',
+      promoCode
     });
     
     validCount++;
@@ -176,6 +183,12 @@ function calculateKPIs(orders, prevMonthNett = 0) {
     ordersByItemCategory[o.itemCategory] = (ordersByItemCategory[o.itemCategory] || 0) + 1;
     revenueByItemCategory[o.itemCategory] = (revenueByItemCategory[o.itemCategory] || 0) + o.nettAmount;
   });
+
+  // Promo distribution
+  const ordersByPromoCode = {};
+  orders.forEach(o => {
+    ordersByPromoCode[o.promoCode] = (ordersByPromoCode[o.promoCode] || 0) + 1;
+  });
   
   // MoM growth
   const momGrowth = prevMonthNett > 0 ? ((totalNett - prevMonthNett) / prevMonthNett) * 100 : 0;
@@ -198,7 +211,8 @@ function calculateKPIs(orders, prevMonthNett = 0) {
     weeklyActiveUsers: weeklyCustomers,
     dailyActiveUsers: dailyCustomers,
     ordersByItemCategory,
-    revenueByItemCategory
+    revenueByItemCategory,
+    ordersByPromoCode
   };
 }
 

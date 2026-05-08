@@ -125,5 +125,19 @@
     "COLD_FOOD": 3509200,
     "COLD_DRINK": 270000,
     "COLD_OTHERS": 223000
+  },
+  "ordersByPromoCode": {
+    "SAMPAIKANDISKON": 7143,
+    "Subscription": 2175,
+    "No Promo": 8247,
+    "AAPROREG": 9573,
+    "PAKETBERAT": 972,
+    "AAPROSD": 144,
+    "MULAIKIRIM": 9,
+    "C48W5HFN": 19,
+    "9MRNR8J7": 1,
+    "TAYJUMN3": 9,
+    "UC9BW7MM": 2,
+    "3FAYYNJ3": 1
   }
 }

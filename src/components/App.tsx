@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { store, setOrders, setLoading, setError, computeKPIs, setActiveView, setSelectedMonth, setTheme } from '../store';
 import { SummaryCards } from './SummaryCards';
-import { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart } from './Charts';
+import { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart, PromoChart } from './Charts';
 import { getMonthName } from '../utils/formatters';
 
 const Dashboard: React.FC = () => {
@@ -172,7 +172,7 @@ const Dashboard: React.FC = () => {
       {sectionHeader('💳', 'Transaction Behavior')}
       <div className="grid grid-cols-2 gap-6">
         <div className="min-w-0"><PaymentChart /></div>
-        <div />
+        <div className="min-w-0"><PromoChart /></div>
       </div>
 
       {sectionHeader('📦', 'Service Performance')}

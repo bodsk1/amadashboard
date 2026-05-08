@@ -712,7 +712,114 @@ const OrdersByServiceChart: React.FC = () => {
   );
 };
 
-export { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart };
+const PROMO_COLORS: Record<string, string> = {
+  'No Promo': '#94a3b8',
+  'Subscription': '#a78bfa',
+  'AAPROREG': '#60a5fa',
+  'AAPROSD': '#34d399',
+  'PAKETBERAT': '#fbbf24',
+  'MULAIKIRIM': '#f472b6',
+};
+
+const PromoChart: React.FC = () => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const { activeView, selectedMonth, theme } = useSelector((state: RootState) => state.ui);
+  const { kpis, overallKpis } = useSelector((state: RootState) => state.computed);
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
+
+  useEffect(() => {
+    if (!svgRef.current) return;
+
+    const kpisData = activeView === 'overall' ? overallKpis : (selectedMonth ? kpis[selectedMonth] : overallKpis);
+    if (!kpisData?.ordersByPromoCode) return;
+
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove();
+
+    const c = getD3Colors(theme);
+    const width = 560, height = 300;
+    const pieCx = 130, pieCy = 145, pieOuter = 105, pieInner = 52;
+
+    const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+    const getColor = (label: string) => PROMO_COLORS[label] || colorScale(label);
+
+    const data = Object.entries(kpisData.ordersByPromoCode as Record<string, number>)
+      .filter(([_, v]) => v > 0)
+      .map(([label, value]) => ({ label, value }))
+      .sort((a, b) => b.value - a.value);
+
+    if (data.length === 0) return;
+
+    const total = d3.sum(data, d => d.value);
+    const pie = d3.pie<{ label: string; value: number }>().value(d => d.value).sort(null);
+    const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(pieInner).outerRadius(pieOuter);
+    const arcHover = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>().innerRadius(pieInner).outerRadius(pieOuter + 10);
+
+    const g = svg.append('g').attr('transform', `translate(${pieCx},${pieCy})`);
+
+    g.selectAll('path')
+      .data(pie(data))
+      .enter()
+      .append('path')
+      .attr('d', arc as any)
+      .attr('fill', d => getColor(d.data.label))
+      .attr('stroke', c.pieStroke)
+      .attr('stroke-width', 2)
+      .attr('cursor', 'pointer')
+      .on('mouseenter', function(event, d) {
+        d3.select(this).transition().duration(200).attr('d', arcHover as any);
+        const pct = ((d.data.value / total) * 100).toFixed(1);
+        setTooltip({ x: pieCx, y: pieCy - 50, content: `${d.data.label}\nOrders: ${formatNumber(d.data.value)}\n(${pct}%)` });
+      })
+      .on('mouseleave', function() {
+        d3.select(this).transition().duration(200).attr('d', arc as any);
+        setTooltip(null);
+      });
+
+    g.selectAll('text.label')
+      .data(pie(data).filter(d => (d.data.value / total) >= 0.04))
+      .enter()
+      .append('text')
+      .attr('class', 'label')
+      .attr('transform', d => `translate(${arc.centroid(d as any)})`)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'middle')
+      .attr('fill', '#fff')
+      .attr('font-size', '10px')
+      .attr('font-weight', 'bold')
+      .attr('pointer-events', 'none')
+      .text(d => `${((d.data.value / total) * 100).toFixed(0)}%`);
+
+    const legendX = 255;
+    const rowH = 22;
+    const legendStartY = Math.max(10, pieCy - (data.length * rowH) / 2);
+    const legendGroup = svg.append('g').attr('transform', `translate(${legendX}, ${legendStartY})`);
+    data.forEach((d, i) => {
+      const pct = ((d.value / total) * 100).toFixed(1);
+      legendGroup.append('rect').attr('x', 0).attr('y', i * rowH).attr('width', 11).attr('height', 11)
+        .attr('fill', getColor(d.label)).attr('rx', 2);
+      legendGroup.append('text').attr('x', 17).attr('y', i * rowH + 9)
+        .attr('fill', c.legendText).attr('font-size', '11px')
+        .text(`${d.label}: ${formatNumber(d.value)} (${pct}%)`);
+    });
+  }, [activeView, selectedMonth, kpis, overallKpis, theme]);
+
+  return (
+    <div style={getContainerStyle(theme)}>
+      <div style={getTitleStyle(theme)}>Promo Code Distribution</div>
+      <div style={{ position: 'relative' }}>
+        <svg ref={svgRef} width="100%" height="300" viewBox="0 0 560 300" />
+        {tooltip && (
+          <div style={{ ...getTooltipStyle(theme), left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
+            {tooltip.content}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart, PromoChart };
 
 const ConcentrationChart: React.FC = () => {
   const { activeView, selectedMonth, theme } = useSelector((state: RootState) => state.ui);
