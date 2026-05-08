@@ -355,7 +355,7 @@ const PaymentChart: React.FC = () => {
     const pieCx = 130, pieCy = 130, pieOuter = 95, pieInner = 48;
 
     const data = Object.entries(kpisData.transactionsByPayment)
-      .filter(([_, v]) => v > 0)
+      .filter(([label, v]) => v > 0 && label !== 'Sakuaja')
       .map(([label, value]) => ({ label, value }))
       .sort((a, b) => b.value - a.value);
 
