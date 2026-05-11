@@ -737,8 +737,8 @@ const PromoChart: React.FC = () => {
     svg.selectAll('*').remove();
 
     const c = getD3Colors(theme);
-    const width = 560, height = 300;
-    const pieCx = 130, pieCy = 145, pieOuter = 105, pieInner = 52;
+    const width = 560, height = 260;
+    const pieCx = 130, pieCy = 130, pieOuter = 95, pieInner = 48;
 
     const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
     const getColor = (label: string) => PROMO_COLORS[label] || colorScale(label);
@@ -769,7 +769,7 @@ const PromoChart: React.FC = () => {
       .on('mouseenter', function(event, d) {
         d3.select(this).transition().duration(200).attr('d', arcHover as any);
         const pct = ((d.data.value / total) * 100).toFixed(1);
-        setTooltip({ x: pieCx, y: pieCy - 50, content: `${d.data.label}\nOrders: ${formatNumber(d.data.value)}\n(${pct}%)` });
+        setTooltip({ x: pieCx, y: pieCy - 40, content: `${d.data.label}\nOrders: ${formatNumber(d.data.value)}\n(${pct}%)` });
       })
       .on('mouseleave', function() {
         d3.select(this).transition().duration(200).attr('d', arc as any);
@@ -777,7 +777,7 @@ const PromoChart: React.FC = () => {
       });
 
     g.selectAll('text.label')
-      .data(pie(data).filter(d => (d.data.value / total) >= 0.04))
+      .data(pie(data).filter(d => (d.data.value / total) >= 0.05))
       .enter()
       .append('text')
       .attr('class', 'label')
@@ -790,17 +790,24 @@ const PromoChart: React.FC = () => {
       .attr('pointer-events', 'none')
       .text(d => `${((d.data.value / total) * 100).toFixed(0)}%`);
 
-    const legendX = 255;
-    const rowH = 22;
-    const legendStartY = Math.max(10, pieCy - (data.length * rowH) / 2);
-    const legendGroup = svg.append('g').attr('transform', `translate(${legendX}, ${legendStartY})`);
+    // 2-column legend to fit all items within the 260px height
+    const cols = 2;
+    const colW = (width - 255) / cols;
+    const rowH = 18;
+    const rows = Math.ceil(data.length / cols);
+    const legendStartY = Math.max(8, pieCy - (rows * rowH) / 2);
+
     data.forEach((d, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const lx = 255 + col * colW;
+      const ly = legendStartY + row * rowH;
       const pct = ((d.value / total) * 100).toFixed(1);
-      legendGroup.append('rect').attr('x', 0).attr('y', i * rowH).attr('width', 11).attr('height', 11)
+      svg.append('rect').attr('x', lx).attr('y', ly).attr('width', 10).attr('height', 10)
         .attr('fill', getColor(d.label)).attr('rx', 2);
-      legendGroup.append('text').attr('x', 17).attr('y', i * rowH + 9)
-        .attr('fill', c.legendText).attr('font-size', '11px')
-        .text(`${d.label}: ${formatNumber(d.value)} (${pct}%)`);
+      svg.append('text').attr('x', lx + 14).attr('y', ly + 9)
+        .attr('fill', c.legendText).attr('font-size', '10px')
+        .text(`${d.label}: ${pct}%`);
     });
   }, [activeView, selectedMonth, kpis, overallKpis, theme]);
 
@@ -808,7 +815,7 @@ const PromoChart: React.FC = () => {
     <div style={getContainerStyle(theme)}>
       <div style={getTitleStyle(theme)}>Promo Code Distribution</div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" height="300" viewBox="0 0 560 300" />
+        <svg ref={svgRef} width="100%" height="260" viewBox="0 0 560 260" />
         {tooltip && (
           <div style={{ ...getTooltipStyle(theme), left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
