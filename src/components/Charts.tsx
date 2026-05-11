@@ -1011,6 +1011,9 @@ const ItemCategoryChart: React.FC = () => {
       const width = 700, height = 380 + legendHeight;
       const margin = { top: 40, right: 20, bottom: 20 + legendHeight, left: 60 };
 
+      svgRef.current.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      svgRef.current.setAttribute('height', String(height));
+
       const lineData = allCategoriesSorted.map(category => ({
         category,
         values: months.map(m => ({ month: m, orders: kpis[m]?.ordersByItemCategory[category] || 0 }))
@@ -1113,7 +1116,7 @@ const ItemCategoryChart: React.FC = () => {
         {activeView === 'overall' ? 'Item Categories - Trend' : 'Item Category Performance'}
       </div>
       <div style={{ position: 'relative' }}>
-        <svg ref={svgRef} width="100%" viewBox="0 0 700 700" style={{ overflow: 'visible' }} />
+        <svg ref={svgRef} width="100%" style={{ overflow: 'visible' }} />
         {tooltip && (
           <div style={{ ...getTooltipStyle(theme), left: tooltip.x - 60, top: tooltip.y, textAlign: 'center', whiteSpace: 'pre-line' }}>
             {tooltip.content}
