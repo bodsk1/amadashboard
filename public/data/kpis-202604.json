@@ -34,6 +34,15 @@
     "SHOPEEPAY/SPAYLATER": 7798,
     "Sakuaja": 16
   },
+  "revenueByPayment": {
+    "OVO": 102549693,
+    "QRIS": 127409324,
+    "SHOPEEPAY/SPAYLATER": 88684157,
+    "GOPAY": 78511142,
+    "Refundaja": 15108959,
+    "Sakuaja": 215640,
+    "Free": 0
+  },
   "momGrowth": -7.403623295784044,
   "promoToRevenueRatio": 16.366820817084605,
   "averageDiscountPerTransaction": 2852.8423749779113,

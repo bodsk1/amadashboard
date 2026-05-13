@@ -404,16 +404,21 @@ const PaymentChart: React.FC = () => {
       .text(d => `${((d.data.value / total) * 100).toFixed(0)}%`);
 
     const legendX = 255;
-    const rowH = 22;
-    const legendStartY = pieCy - (data.length * rowH) / 2;
+    const rowH = 26;
+    const legendStartY = Math.max(8, pieCy - (data.length * rowH) / 2);
     const legendGroup = svg.append('g').attr('transform', `translate(${legendX}, ${legendStartY})`);
+    const revenueByPayment = (kpisData as any).revenueByPayment as Record<string, number> || {};
     data.forEach((d, i) => {
       const pct = ((d.value / total) * 100).toFixed(1);
+      const rev = revenueByPayment[d.label] || 0;
       legendGroup.append('rect').attr('x', 0).attr('y', i * rowH).attr('width', 11).attr('height', 11)
         .attr('fill', colors(d.label)).attr('rx', 2);
       legendGroup.append('text').attr('x', 17).attr('y', i * rowH + 9)
-        .attr('fill', c.legendText).attr('font-size', '11px')
+        .attr('fill', c.legendText).attr('font-size', '11px').attr('font-weight', '600')
         .text(`${d.label}: ${formatNumber(d.value)} (${pct}%)`);
+      legendGroup.append('text').attr('x', 17).attr('y', i * rowH + 21)
+        .attr('fill', c.legendSub).attr('font-size', '10px')
+        .text(formatCompactCurrency(rev));
     });
   }, [activeView, selectedMonth, kpis, overallKpis, theme]);
 

@@ -136,8 +136,10 @@ function calculateKPIs(orders, prevMonthNett = 0) {
   
   // Payment distribution
   const transactionsByPayment = { GOPAY: 0, OVO: 0, SHOPEEPAY: 0, QRIS: 0, Refundaja: 0, Free: 0 };
+  const revenueByPayment = {};
   orders.forEach(o => {
     transactionsByPayment[o.paymentChannel] = (transactionsByPayment[o.paymentChannel] || 0) + 1;
+    revenueByPayment[o.paymentChannel] = (revenueByPayment[o.paymentChannel] || 0) + o.nettAmount;
   });
   
   // Promo effectiveness
@@ -203,6 +205,7 @@ function calculateKPIs(orders, prevMonthNett = 0) {
     revenueByService,
     transactionsByService,
     transactionsByPayment,
+    revenueByPayment,
     momGrowth,
     promoToRevenueRatio,
     averageDiscountPerTransaction,

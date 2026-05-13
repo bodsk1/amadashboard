@@ -77,8 +77,10 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
   });
   
   const transactionsByPayment: Record<PaymentChannel, number> = { GOPAY: 0, OVO: 0, SHOPEEPAY: 0, QRIS: 0, Refundaja: 0, Free: 0 };
+  const revenueByPayment: Record<string, number> = {};
   orders.forEach(o => {
     transactionsByPayment[o.paymentChannel] = (transactionsByPayment[o.paymentChannel] || 0) + 1;
+    revenueByPayment[o.paymentChannel] = (revenueByPayment[o.paymentChannel] || 0) + o.nettAmount;
   });
   
   // New Metric 1: Promo Effectiveness
@@ -152,6 +154,7 @@ export const calculateKPIs = (orders: OrderRecord[], prevNett?: number) => {
     revenueByService,
     transactionsByService,
     transactionsByPayment,
+    revenueByPayment,
     momGrowth,
     promoToRevenueRatio,
     averageDiscountPerTransaction,

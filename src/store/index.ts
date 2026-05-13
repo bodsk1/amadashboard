@@ -12,6 +12,7 @@ const initialKPIMetrics: KPIMetrics = {
   revenueByService: { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 },
   transactionsByService: { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 },
   transactionsByPayment: { GOPAY: 0, OVO: 0, SHOPEEPAY: 0, QRIS: 0, Refundaja: 0, Free: 0 },
+  revenueByPayment: {},
   momGrowth: 0,
   promoToRevenueRatio: 0,
   averageDiscountPerTransaction: 0,
@@ -112,6 +113,7 @@ const computedSlice = createSlice({
             revenueByService: { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 },
             transactionsByService: { REG: 0, SD: 0, DOK: 0, MIC: 0, BIG: 0, ICE: 0 },
             transactionsByPayment: { GOPAY: 0, OVO: 0, SHOPEEPAY: 0, QRIS: 0, Refundaja: 0, Free: 0 },
+            revenueByPayment: {},
             momGrowth: 0,
             promoToRevenueRatio: 0,
             averageDiscountPerTransaction: 0,
@@ -146,6 +148,9 @@ const computedSlice = createSlice({
             // Payment
             Object.keys(kpi.transactionsByPayment).forEach(payment => {
               overallKpis.transactionsByPayment[payment as PaymentChannel] += kpi.transactionsByPayment[payment as PaymentChannel] || 0;
+            });
+            Object.keys(kpi.revenueByPayment || {}).forEach(payment => {
+              overallKpis.revenueByPayment[payment] = (overallKpis.revenueByPayment[payment] || 0) + kpi.revenueByPayment[payment];
             });
             
             // Item categories

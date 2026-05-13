@@ -46,6 +46,7 @@ export interface KPIMetrics {
   revenueByService: Record<ServiceType, number>;
   transactionsByService: Record<ServiceType, number>;
   transactionsByPayment: Record<PaymentChannel, number>;
+  revenueByPayment: Record<string, number>;
   momGrowth: number;
   promoToRevenueRatio: number;
   averageDiscountPerTransaction: number;
