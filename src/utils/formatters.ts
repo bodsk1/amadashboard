@@ -1,6 +1,8 @@
 export const formatCurrency = (value: number): string => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(value);
 export const formatNumber = (value: number): string => new Intl.NumberFormat("id-ID").format(value);
 export const formatPercent = (value: number): string => `${value >= 0 ? "+" : ""}${value.toFixed(1)}%`;
+export const formatDetailedCurrency = (value: number): string =>
+  `Rp ${new Intl.NumberFormat('en-US').format(Math.round(value))}`;
 export const formatCompactCurrency = (value: number): string => {
   if (value >= 1_000_000_000) return `Rp ${(value / 1_000_000_000).toFixed(1)}B`;
   if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(0)}M`;

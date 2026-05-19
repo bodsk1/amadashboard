@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import { formatCurrency, formatNumber, formatCompactCurrency, formatCompactNumber } from '../utils/formatters';
+import { formatCurrency, formatNumber, formatCompactCurrency, formatCompactNumber, formatDetailedCurrency } from '../utils/formatters';
 
 const TREND_LINE_COLORS = { gross: '#60a5fa', promo: '#f472b6', nett: '#4ade80' };
 
@@ -418,7 +418,7 @@ const PaymentChart: React.FC = () => {
         .text(`${d.label}: ${formatNumber(d.value)} (${pct}%)`);
       legendGroup.append('text').attr('x', 17).attr('y', i * rowH + 21)
         .attr('fill', c.legendSub).attr('font-size', '10px')
-        .text(formatCompactCurrency(rev));
+        .text(formatDetailedCurrency(rev));
     });
   }, [activeView, selectedMonth, kpis, overallKpis, theme]);
 
