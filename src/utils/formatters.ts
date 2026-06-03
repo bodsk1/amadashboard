@@ -16,5 +16,5 @@ export const formatCompactNumber = (value: number): string => {
 };
 export const getMonthName = (monthStr: string): string => {
   const [year, month] = [monthStr.slice(0, 4), monthStr.slice(4, 6)];
-  return new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString("id-ID", { month: "long", year: "numeric" });
+  return new Date(parseInt(year), parseInt(month) - 1).toLocaleDateString("en-US", { month: "long", year: "numeric" });
 };
