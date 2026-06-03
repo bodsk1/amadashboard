@@ -1,0 +1,153 @@
+{
+  "totalTransactions": 29548,
+  "totalGross": 513474900,
+  "totalPromo": 95307041,
+  "totalNett": 418167859,
+  "averageOrderValue": 14152.154426695546,
+  "transactionsByProfile": {
+    "Retail": 18492,
+    "AAPRO": 11056
+  },
+  "revenueByService": {
+    "REG": 319141833,
+    "SD": 35270526,
+    "DOK": 4863300,
+    "MIC": 33787400,
+    "BIG": 21712800,
+    "ICE": 3392000
+  },
+  "transactionsByService": {
+    "REG": 26177,
+    "SD": 1553,
+    "DOK": 434,
+    "MIC": 834,
+    "BIG": 351,
+    "ICE": 199
+  },
+  "transactionsByPayment": {
+    "GOPAY": 5866,
+    "OVO": 6661,
+    "SHOPEEPAY": 0,
+    "QRIS": 8058,
+    "Refundaja": 1482,
+    "Free": 33,
+    "SHOPEEPAY/SPAYLATER": 7439,
+    "Sakuaja": 9
+  },
+  "revenueByPayment": {
+    "SHOPEEPAY/SPAYLATER": 81537580,
+    "GOPAY": 82663710,
+    "OVO": 94162735,
+    "QRIS": 143072364,
+    "Refundaja": 16634110,
+    "Free": 0,
+    "Sakuaja": 97360
+  },
+  "momGrowth": 1.3792084378422107,
+  "promoToRevenueRatio": 18.56118789837634,
+  "averageDiscountPerTransaction": 3225.498883173142,
+  "topCustomersByOrders": [
+    {
+      "customerId": "2000848769",
+      "orderCount": 385,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001760547",
+      "orderCount": 213,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000254128",
+      "orderCount": 209,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000377791",
+      "orderCount": 188,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000058973",
+      "orderCount": 177,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001700103",
+      "orderCount": 172,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000321895",
+      "orderCount": 169,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000565953",
+      "orderCount": 152,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001195726",
+      "orderCount": 142,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000335677",
+      "orderCount": 130,
+      "profileType": "AAPRO"
+    }
+  ],
+  "monthlyActiveUsers": 7059,
+  "weeklyActiveUsers": 2491,
+  "dailyActiveUsers": 637,
+  "ordersByItemCategory": {
+    "MAINAN": 1721,
+    "FASHION": 10388,
+    "DOC": 3823,
+    "HOUSEHOLD": 2119,
+    "FNB": 3773,
+    "BOOKS": 302,
+    "KESEHATAN": 2704,
+    "OTOMOTIF": 322,
+    "ELECTRONIC": 1710,
+    "BEAUTY": 1137,
+    "COLD_FOOD": 167,
+    "ATK": 643,
+    "MEBEL": 707,
+    "COLD_DRINK": 15,
+    "COLD_OTHERS": 17
+  },
+  "revenueByItemCategory": {
+    "MAINAN": 25069550,
+    "FASHION": 131904091,
+    "DOC": 45662225,
+    "HOUSEHOLD": 31162684,
+    "FNB": 64352946,
+    "BOOKS": 4050915,
+    "KESEHATAN": 30116028,
+    "OTOMOTIF": 7118520,
+    "ELECTRONIC": 31087081,
+    "BEAUTY": 14439053,
+    "COLD_FOOD": 2861500,
+    "ATK": 12648702,
+    "MEBEL": 17164064,
+    "COLD_DRINK": 289500,
+    "COLD_OTHERS": 241000
+  },
+  "ordersByPromoCode": {
+    "AAPROREG": 10282,
+    "No Promo": 3690,
+    "SAMPAIKANDISKON": 12363,
+    "Subscription": 1737,
+    "PAKETBERAT": 1077,
+    "KIRIMFROZEN": 172,
+    "TAYJUMN3": 27,
+    "AAPROSD": 149,
+    "MULAIKIRIM": 18,
+    "C48W5HFN": 17,
+    "KIRIMLAGI": 11,
+    "KJKFMJYM": 4,
+    "TPPL4VR8": 1
+  }
+}
