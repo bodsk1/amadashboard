@@ -4,6 +4,7 @@ import { store, setOrders, setLoading, setError, computeKPIs, setActiveView, set
 import { SummaryCards } from './SummaryCards';
 import { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart, PromoChart } from './Charts';
 import { getMonthName } from '../utils/formatters';
+import { Analytics } from '@vercel/analytics/react';
 
 const Dashboard: React.FC = () => {
   const dispatch = useDispatch();
@@ -189,6 +190,7 @@ const Dashboard: React.FC = () => {
       <footer className={`mt-16 pt-10 border-t text-center text-xs ${isDark ? 'border-navy-600 text-gray-500' : 'border-gray-200 text-gray-400'}`}>
         <p>Created by Nanda Pratama © 2026</p>
       </footer>
+      <Analytics />
     </div>
   );
 };
