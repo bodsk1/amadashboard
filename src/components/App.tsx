@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Provider, useDispatch, useSelector } from 'react-redux';
+import { Analytics } from '@vercel/analytics/react';
 import { store, setOrders, setLoading, setError, computeKPIs, setActiveView, setSelectedMonth, setTheme } from '../store';
 import { SummaryCards } from './SummaryCards';
 import { RevenueTrendChart, OrderTrendChart, PaymentChart, ProfileChart, ServiceChart, OrdersByServiceChart, ConcentrationChart, ItemCategoryChart, PromoChart } from './Charts';
@@ -194,5 +195,8 @@ const Dashboard: React.FC = () => {
 };
 
 export const App: React.FC = () => (
-  <Provider store={store}><Dashboard /></Provider>
+  <Provider store={store}>
+    <Dashboard />
+    <Analytics />
+  </Provider>
 );
