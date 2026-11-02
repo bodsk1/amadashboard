@@ -1,0 +1,194 @@
+{
+  "totalTransactions": 32524,
+  "totalGross": 580683610,
+  "totalPromo": 122929874,
+  "totalNett": 457753736,
+  "averageOrderValue": 14074.336981921042,
+  "transactionsByProfile": {
+    "Retail": 19288,
+    "AAPRO": 13236
+  },
+  "revenueByService": {
+    "REG": 334173641,
+    "SD": 49999825,
+    "DOK": 7221470,
+    "MIC": 36551900,
+    "BIG": 25701700,
+    "ICE": 4105200
+  },
+  "transactionsByService": {
+    "REG": 27291,
+    "SD": 3153,
+    "DOK": 632,
+    "MIC": 883,
+    "BIG": 420,
+    "ICE": 145
+  },
+  "transactionsByPayment": {
+    "GOPAY": 4189,
+    "OVO": 6709,
+    "SHOPEEPAY": 0,
+    "QRIS": 10726,
+    "Refundaja": 1397,
+    "Free": 200,
+    "SHOPEEPAY/SPAYLATER": 8174,
+    "Sakuaja": 12,
+    "OCBCQR": 1117
+  },
+  "revenueByPayment": {
+    "SHOPEEPAY/SPAYLATER": 91180299,
+    "QRIS": 180612041,
+    "GOPAY": 52769950,
+    "OVO": 96510225,
+    "Refundaja": 16829371,
+    "Free": 0,
+    "Sakuaja": 130655,
+    "OCBCQR": 19721195
+  },
+  "momGrowth": 1.7251900297709368,
+  "promoToRevenueRatio": 21.169854268833248,
+  "averageDiscountPerTransaction": 3779.66652318288,
+  "topCustomersByOrders": [
+    {
+      "customerId": "2000848769",
+      "orderCount": 386,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000254128",
+      "orderCount": 375,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000012285",
+      "orderCount": 271,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001760547",
+      "orderCount": 213,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000058973",
+      "orderCount": 209,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000091651",
+      "orderCount": 203,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001611557",
+      "orderCount": 179,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000377791",
+      "orderCount": 165,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000429519",
+      "orderCount": 143,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000075332",
+      "orderCount": 139,
+      "profileType": "AAPRO"
+    }
+  ],
+  "concentrationByTier": {
+    "top10": 7.019431804206125,
+    "top20": 10.536834337719837,
+    "top50": 18.32492928299102
+  },
+  "monthlyActiveUsers": 7226,
+  "weeklyActiveUsers": 2776,
+  "dailyActiveUsers": 955,
+  "ordersByItemCategory": {
+    "FASHION": 11183,
+    "ATK": 575,
+    "KESEHATAN": 2218,
+    "MAINAN": 1774,
+    "HOUSEHOLD": 2696,
+    "BOOKS": 503,
+    "FNB": 5140,
+    "BEAUTY": 1435,
+    "DOC": 3960,
+    "MEBEL": 862,
+    "ELECTRONIC": 1694,
+    "COLD_FOOD": 133,
+    "OTOMOTIF": 339,
+    "COLD_OTHERS": 10,
+    "COLD_DRINK": 2
+  },
+  "revenueByItemCategory": {
+    "FASHION": 138087602,
+    "ATK": 8326036,
+    "KESEHATAN": 26404217,
+    "MAINAN": 27810485,
+    "HOUSEHOLD": 37700294,
+    "BOOKS": 9964742,
+    "FNB": 84885402,
+    "BEAUTY": 17770618,
+    "DOC": 47926421,
+    "MEBEL": 19516108,
+    "ELECTRONIC": 27811141,
+    "COLD_FOOD": 3775600,
+    "OTOMOTIF": 7445470,
+    "COLD_OTHERS": 290000,
+    "COLD_DRINK": 39600
+  },
+  "ordersByPromoCode": {
+    "AAPROREG": 11675,
+    "No Promo": 4631,
+    "PASTITUNTAS": 2537,
+    "PAKETBERAT": 1136,
+    "SAMPAIKANDISKON": 10195,
+    "Subscription": 1790,
+    "AMANTUNTAS": 184,
+    "MULAIKIRIM": 41,
+    "LDP9TDJ4": 72,
+    "TAYJUMN3": 54,
+    "3BM79U8N": 37,
+    "JLLJ478": 1,
+    "ICCXANTERAJA": 5,
+    "HEAWPQWD": 53,
+    "8FF4QY99": 52,
+    "JLAB619": 1,
+    "JLTV681": 1,
+    "JLAK016": 1,
+    "C48W5HFN": 23,
+    "JLQI062": 1,
+    "JLUL099": 1,
+    "JLZD124": 1,
+    "JLLF871": 1,
+    "JLSF041": 1,
+    "JLHV815": 1,
+    "JLNJ982": 1,
+    "ANTERAJATOKIO": 5,
+    "JLFN188": 1,
+    "JLAC794": 1,
+    "JLSN134": 1,
+    "AAMCD4E44": 1,
+    "JLDQ108": 1,
+    "JLME692": 1,
+    "JLKB397": 1,
+    "JLXI562": 1,
+    "JLIH432": 1,
+    "JLIF965": 1,
+    "JLRI169": 1,
+    "UWJCXRY5": 1,
+    "JLVR612": 1,
+    "LUUQWVBL": 4,
+    "JLBQ447": 1,
+    "JLYS640": 1,
+    "TQ3P9AJQ": 1,
+    "JLSY394": 1,
+    "JLXS482": 1,
+    "JLAG305": 1
+  }
+}

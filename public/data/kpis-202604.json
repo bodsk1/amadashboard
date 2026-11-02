@@ -98,6 +98,11 @@
       "profileType": "AAPRO"
     }
   ],
+  "concentrationByTier": {
+    "top10": 7.0542498674677505,
+    "top20": 10.712139954055488,
+    "top50": 17.68156918183425
+  },
   "monthlyActiveUsers": 7273,
   "weeklyActiveUsers": 2739,
   "dailyActiveUsers": 999,
