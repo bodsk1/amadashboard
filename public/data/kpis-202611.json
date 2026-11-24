@@ -1,0 +1,214 @@
+{
+  "totalTransactions": 23528,
+  "totalGross": 436063490,
+  "totalPromo": 95806283,
+  "totalNett": 340257207,
+  "averageOrderValue": 14461.799005440327,
+  "transactionsByProfile": {
+    "Retail": 13685,
+    "AAPRO": 9843
+  },
+  "revenueByService": {
+    "REG": 239014170,
+    "SD": 35205865,
+    "DOK": 5517622,
+    "MIC": 37732850,
+    "BIG": 20199700,
+    "ICE": 2587000
+  },
+  "transactionsByService": {
+    "REG": 19575,
+    "SD": 2205,
+    "DOK": 488,
+    "MIC": 859,
+    "BIG": 294,
+    "ICE": 107
+  },
+  "transactionsByPayment": {
+    "GOPAY": 2517,
+    "OVO": 4729,
+    "SHOPEEPAY": 0,
+    "QRIS": 4718,
+    "Refundaja": 1038,
+    "Free": 200,
+    "OCBCQR": 3881,
+    "SHOPEEPAY/SPAYLATER": 6436,
+    "Sakuaja": 9
+  },
+  "revenueByPayment": {
+    "Refundaja": 11728560,
+    "OVO": 65562389,
+    "OCBCQR": 72379384,
+    "SHOPEEPAY/SPAYLATER": 70289935,
+    "Free": 0,
+    "Sakuaja": 68730,
+    "GOPAY": 32857508,
+    "QRIS": 87370701
+  },
+  "momGrowth": -25.668065546929803,
+  "promoToRevenueRatio": 21.97071875932562,
+  "averageDiscountPerTransaction": 4072.0113481808908,
+  "topCustomersByOrders": [
+    {
+      "customerId": "2000254128",
+      "orderCount": 440,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000848769",
+      "orderCount": 255,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001760547",
+      "orderCount": 203,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000012285",
+      "orderCount": 185,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000058973",
+      "orderCount": 158,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000377791",
+      "orderCount": 135,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000075332",
+      "orderCount": 131,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000565953",
+      "orderCount": 121,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2001195726",
+      "orderCount": 116,
+      "profileType": "AAPRO"
+    },
+    {
+      "customerId": "2000261845",
+      "orderCount": 111,
+      "profileType": "AAPRO"
+    }
+  ],
+  "concentrationByTier": {
+    "top10": 7.884223053383203,
+    "top20": 11.679700782046924,
+    "top50": 19.393913634818087
+  },
+  "monthlyActiveUsers": 5949,
+  "weeklyActiveUsers": 2910,
+  "dailyActiveUsers": 918,
+  "ordersByItemCategory": {
+    "ELECTRONIC": 1211,
+    "FASHION": 8212,
+    "FNB": 3570,
+    "BEAUTY": 982,
+    "COLD_OTHERS": 12,
+    "KESEHATAN": 1864,
+    "HOUSEHOLD": 1839,
+    "BOOKS": 383,
+    "COLD_FOOD": 93,
+    "DOC": 2934,
+    "MAINAN": 1135,
+    "MEBEL": 690,
+    "OTOMOTIF": 256,
+    "ATK": 345,
+    "COLD_DRINK": 2
+  },
+  "revenueByItemCategory": {
+    "ELECTRONIC": 19865296,
+    "FASHION": 100866349,
+    "FNB": 59611998,
+    "BEAUTY": 11998115,
+    "COLD_OTHERS": 262600,
+    "KESEHATAN": 20929885,
+    "HOUSEHOLD": 28683111,
+    "BOOKS": 7258055,
+    "COLD_FOOD": 2256400,
+    "DOC": 35623742,
+    "MAINAN": 20502409,
+    "MEBEL": 21603713,
+    "OTOMOTIF": 5486940,
+    "ATK": 5240594,
+    "COLD_DRINK": 68000
+  },
+  "ordersByPromoCode": {
+    "Subscription": 875,
+    "SAMPAIKANDISKON": 4850,
+    "PASTITUNTAS": 1296,
+    "No Promo": 3539,
+    "AAPROREG": 7442,
+    "PAKETBERAT": 1007,
+    "8FF4QY99": 52,
+    "AMANTUNTAS": 152,
+    "LDP9TDJ4": 42,
+    "MULAIKIRIM": 20,
+    "TAYJUMN3": 71,
+    "JLTE055": 1,
+    "3BM79U8N": 20,
+    "HEAWPQWD": 59,
+    "MQ4LFHMC": 2,
+    "LUUQWVBL": 3,
+    "JLJV104": 1,
+    "JLXZ704": 1,
+    "JLMC726": 1,
+    "JLLB924": 1,
+    "JLTU243": 1,
+    "C48W5HFN": 10,
+    "JLKM905": 1,
+    "JLOK753": 1,
+    "JLAY288": 1,
+    "E8X55V4F": 1,
+    "JLKL788": 1,
+    "JLPO013": 1,
+    "UWJCXRY5": 1,
+    "JLJV527": 1,
+    "ONG202646LWZ8V5GQ": 1,
+    "ONG2026HD995OC5DR": 1,
+    "JLQS745": 1,
+    "JLWR372": 1,
+    "XMASTUNTAS": 604,
+    "KIRIMTUNTAS": 3435,
+    "ONG20260663M96UXE": 1,
+    "ONG2026NTR4ISW9W2": 1,
+    "ONG2026D1W80HL5Z9": 1,
+    "ONG20267XDAFJTJJK": 1,
+    "ONG2026UUEC7UJQT2": 1,
+    "ONG2026JCX5XEJUGO": 1,
+    "OG2026RJUYTKTFCH": 1,
+    "OG2026YYCW3LFKS0": 1,
+    "OG2026SL17XQ1622": 1,
+    "AAMCD67BX": 1,
+    "OG2026SSYT98VKQZ": 1,
+    "JLPU709": 1,
+    "OG2026F87BDA65Y9": 1,
+    "OG2026UUEC7UJQT2": 1,
+    "OG2026TDMV2DCXPZ": 1,
+    "JLGJ226": 1,
+    "OG2026U1KOA348XE": 1,
+    "JLFM351": 1,
+    "JLPO561": 1,
+    "OG2026GS0H1LUGQV": 1,
+    "OG202646LWZ8V5GQ": 1,
+    "OG2026M86RFQ5POR": 1,
+    "JLNB637": 1,
+    "JLWM521": 1,
+    "OG2026HD995OC5DR": 1,
+    "OG2026LMN3WB95PS": 1,
+    "JLYA053": 1,
+    "DPPAN4XF": 1,
+    "JLCJ195": 1,
+    "4VCT9EYN": 1,
+    "OG2026CMTX4BBLZK": 1
+  }
+}
